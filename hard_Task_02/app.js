@@ -14,15 +14,18 @@
 const num = 266219;
 const nums = Array.from(String(num), Number);
 
-const result = nums.reduce((accum, current) => {
-  return accum * current;
-});
+const result = nums.reduce((accum, current) => accum * current);
+
+/*
+//or
+let result = 1;
+nums.forEach(elem => result *= elem)
 
 //or
-let result2 = 1;
 for (let i = 0; i < nums.length; i++) {
-  result2 *= nums[i];
+  result *= nums[i];
 }
+ */
 
 console.log(result);
 console.log( (result ** 3).toString().slice(0,2) );

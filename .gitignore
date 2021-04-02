@@ -8,4 +8,3 @@ app/css/
 .vs
 package-lock.json
 dist/
-.gitignore

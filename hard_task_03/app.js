@@ -33,13 +33,21 @@ switch (lang) {
 }
 
 console.log('=========== ARRAY ================');
-const days = [en, ru];
 
-lang === 'ru' ? console.log(days[1].toString()) : console.log(days[0].toString());
+const days = [ru, en];
+lang === 'ru' ? console.log(days[0].toString()) : console.log(days[1].toString());
+
+//or
+const days2 =
+  {
+    ru: ru,
+    en: en,
+  };
+console.log(days2[lang].toString());
 
 
 
-console.log('========= PART 2 ==================')
+console.log('========= PART 2 ==================');
 /*
 У нас есть переменная namePerson. Если значение этой переменной “Артем” то вывести в консоль “директор”,
 если значение “Максим” то вывести в консоль “преподаватель”, с любым другим значением вывести в консоль “студент”

@@ -1,9 +1,9 @@
 'use strict';
 
-let money = 7500;
+let money = prompt('Ваш месячный доход?');
 let income = 'попрошайничество';
-let addExpenses = 'алкоголь,еда,оброк хозяину';
-let deposit = false;
+let addExpenses = prompt('Перечислите возможные расходы за рассчитываемый период через запятую');
+let deposit = confirm('Есть ли у вас депозит в банке?');
 let mission = 50000;
 let period = 5;
 
@@ -18,31 +18,19 @@ console.log(`Цель заработать ${mission} рублей`);
 
 console.log(addExpenses.toLowerCase().split(','));
 
-let budgetDay = money / 30;
-console.log(budgetDay);
+
+let expenses1 = prompt('Введите обязательную статью расходов:');
+let amount1 = prompt('Во сколько это обойдется?');
+let expenses2 = prompt('Введите обязательную статью расходов:');
+let amount2 = prompt('Во сколько это обойдется?');
 
 
-money = +prompt('Ваш месячный доход?');
-addExpenses = prompt('Перечислите возможные расходы за рассчитываемый период через запятую');
-deposit = confirm('Есть ли у вас депозит в банке?');
-
-
-const expenses1 = prompt('Введите обязательную статью расходов:');
-let amount1 = +prompt('Во сколько это обойдется?');
-amount1 = isNaN(amount1) ? 0 : amount1;
-
-
-const expenses2 = prompt('Введите обязательную статью расходов:');
-let amount2 = +prompt('Во сколько это обойдется?');
-amount2 = isNaN(amount2) ? 0 : amount2;
-
-
-const budgetMonth = money - amount1 - amount2;
+let budgetMonth = money - (+amount1 + amount2 * 1);
 console.log(`Бюджет на месяц: ${budgetMonth}`);
 
 console.log(`Цель (${mission} рублей) будет достигнута за ${Math.round(mission / budgetMonth)} месяца(-ев)`);
 
-budgetDay = budgetMonth / 30;
+let budgetDay = budgetMonth / 30;
 console.log(`Дневной бюджет, руб. : ${Math.floor(budgetDay)}`);
 
 if (budgetDay >= 1200) {

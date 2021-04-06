@@ -23,8 +23,8 @@ let amount1 = prompt('Во сколько это обойдется?');
 let expenses2 = prompt('Введите обязательную статью расходов:', 'стирка');
 let amount2 = prompt('Во сколько это обойдется?');
 
-function getExpensesMonth(...arr) {
-  return arr.reduce((accum, current) => accum + Number(current), 0);
+function getExpensesMonth(...arg) {
+  return arg.reduce((accum, current) => accum + Number(current), 0);
 }
 
 console.log(`сумма расходов, руб : ${getExpensesMonth(amount1, amount2)}`);

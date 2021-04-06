@@ -35,11 +35,11 @@ function getAccumulatedMonth(salary, ...expenses) {
 
 let accumulatedMonth = getAccumulatedMonth(money, amount1, amount2);
 
-function getTargetMonth(target) {
-  return Math.ceil(target / accumulatedMonth);
+function getTargetMonth(target, balance) {
+  return Math.ceil(target / balance);
 }
 
-console.log(`Срок достижения цели, месяцев: ${getTargetMonth(mission)}`);
+console.log(`Срок достижения цели, месяцев: ${getTargetMonth(mission, accumulatedMonth)}`);
 
 let budgetDay = accumulatedMonth / 30;
 console.log(`Дневной бюджет, руб. : ${accumulatedMonth} / 30 = ${Math.floor(budgetDay)}`);

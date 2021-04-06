@@ -10,7 +10,7 @@ let period = 5;
 
 let showTypeOf = function(data) {
   console.log(data, typeof data);
-}
+};
 
 showTypeOf(money);
 showTypeOf(income);
@@ -23,24 +23,29 @@ let amount1 = prompt('Во сколько это обойдется?');
 let expenses2 = prompt('Введите обязательную статью расходов:', 'стирка');
 let amount2 = prompt('Во сколько это обойдется?');
 
+
+//Суммирует расходы
 function getExpensesMonth(...arg) {
   return arg.reduce((accum, current) => accum + Number(current), 0);
 }
 
 console.log(`сумма расходов, руб : ${getExpensesMonth(amount1, amount2)}`);
 
+//Остаток на месяц (приход - расходы)
 function getAccumulatedMonth(salary, ...expenses) {
   return +salary - getExpensesMonth(...expenses);
 }
 
 let accumulatedMonth = getAccumulatedMonth(money, amount1, amount2);
 
+//Подсчет времени достижения цели
 function getTargetMonth(target, balance) {
   return Math.ceil(target / balance);
 }
 
 console.log(`Срок достижения цели, месяцев: ${getTargetMonth(mission, accumulatedMonth)}`);
 
+//Дневной бюджет
 let budgetDay = accumulatedMonth / 30;
 console.log(`Дневной бюджет, руб. : ${accumulatedMonth} / 30 = ${Math.floor(budgetDay)}`);
 
@@ -54,6 +59,6 @@ let getStatusIncome = function(balance) {
   } else {
     return 'Что-то пошло не так';
   }
-}
+};
 
 console.log(getStatusIncome(budgetDay));

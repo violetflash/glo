@@ -23,23 +23,23 @@ let amount1 = prompt('Во сколько это обойдется?');
 let expenses2 = prompt('Введите обязательную статью расходов:', 'стирка');
 let amount2 = prompt('Во сколько это обойдется?');
 
-function getExpensesMonth() {
-  return +amount1 + amount2 * 1;
+function getExpensesMonth(...arr) {
+  return arr.reduce((accum, current) => accum + Number(current), 0);
 }
 
-console.log(getExpensesMonth());
+console.log(getExpensesMonth(amount1, amount2));
 
-function getAccumulatedMonth() {
-  return +money - getExpensesMonth();
+function getAccumulatedMonth(salary) {
+  return +salary - getExpensesMonth();
 }
 
-let accumulatedMonth = getAccumulatedMonth();
+let accumulatedMonth = getAccumulatedMonth(money);
 
-function getTargetMonth() {
-  return Math.round(mission / accumulatedMonth);
+function getTargetMonth(target) {
+  return Math.round(target / accumulatedMonth);
 }
 
-console.log(`Срок достижения цели, месяцев: ${getTargetMonth()}`);
+console.log(`Срок достижения цели, месяцев: ${getTargetMonth(mission)}`);
 
 let budgetDay = accumulatedMonth / 30;
 console.log(`Дневной бюджет, руб. : ${Math.floor(budgetDay)}`);

@@ -1,3 +1,5 @@
+'use strict';
+
 const stringCutter = function(str) {
   if (typeof str !== 'string') return `${str} - не строка!`;
   str = str.trim();

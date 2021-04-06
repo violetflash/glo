@@ -29,11 +29,11 @@ function getExpensesMonth(...arr) {
 
 console.log(getExpensesMonth(amount1, amount2));
 
-function getAccumulatedMonth(salary) {
-  return +salary - getExpensesMonth();
+function getAccumulatedMonth(salary, ...expenses) {
+  return +salary - getExpensesMonth(...expenses);
 }
 
-let accumulatedMonth = getAccumulatedMonth(money);
+let accumulatedMonth = getAccumulatedMonth(money, amount1, amount2);
 
 function getTargetMonth(target) {
   return Math.round(target / accumulatedMonth);

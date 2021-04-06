@@ -27,7 +27,7 @@ function getExpensesMonth(...arr) {
   return arr.reduce((accum, current) => accum + Number(current), 0);
 }
 
-console.log(getExpensesMonth(amount1, amount2));
+console.log(`сумма расходов, руб : ${getExpensesMonth(amount1, amount2)}`);
 
 function getAccumulatedMonth(salary, ...expenses) {
   return +salary - getExpensesMonth(...expenses);
@@ -36,13 +36,13 @@ function getAccumulatedMonth(salary, ...expenses) {
 let accumulatedMonth = getAccumulatedMonth(money, amount1, amount2);
 
 function getTargetMonth(target) {
-  return Math.round(target / accumulatedMonth);
+  return Math.ceil(target / accumulatedMonth);
 }
 
 console.log(`Срок достижения цели, месяцев: ${getTargetMonth(mission)}`);
 
 let budgetDay = accumulatedMonth / 30;
-console.log(`Дневной бюджет, руб. : ${Math.floor(budgetDay)}`);
+console.log(`Дневной бюджет, руб. : ${accumulatedMonth} / 30 = ${Math.floor(budgetDay)}`);
 
 let getStatusIncome = function(balance) {
   if (balance >= 1200) {

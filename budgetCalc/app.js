@@ -33,7 +33,7 @@ console.log(addExpenses.toLowerCase().split(','));
 
 
 //Суммирует расходы
-function getExpensesMonth() {
+function getExpensesMonth(obj) {
   for (let i = 0; i < 2; i++) {
     let expense = prompt('Введите обязательную статью расходов:', 'штраф');
     let amount;
@@ -41,18 +41,13 @@ function getExpensesMonth() {
     do {    //проверка на число
       amount = prompt('Во сколько это обойдется?');
     } while (!isNumber(amount));
-    expenses[expense] = +amount;   //Запись расхода в объект
+    obj[expense] = +amount;   //Запись расхода в объект
   }
-
-  return expenses;
 }
 
-getExpensesMonth();
+getExpensesMonth(expenses);
 
-let expensesAmount = 0;
-for (const expensesKey in expenses) {
-  expensesAmount += expenses[expensesKey];
-}
+let expensesAmount = Object.values(expenses).reduce((accum, curr) => accum + curr);
 console.log(`сумма расходов, руб : ${expensesAmount}`);
 
 //Остаток на месяц (приход - расходы)

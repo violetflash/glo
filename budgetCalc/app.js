@@ -43,11 +43,10 @@ function getExpensesMonth(obj) {
     } while (!isNumber(amount));
     obj[expense] = +amount;   //Запись расхода в объект
   }
+  return Object.values(expenses).reduce((accum, curr) => accum + curr); //сумма всех расходов
 }
 
-getExpensesMonth(expenses);
-
-let expensesAmount = Object.values(expenses).reduce((accum, curr) => accum + curr);
+let expensesAmount = getExpensesMonth(expenses);
 console.log(`сумма расходов, руб : ${expensesAmount}`);
 
 //Остаток на месяц (приход - расходы)

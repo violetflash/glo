@@ -14,7 +14,7 @@ for (let i = 0; i < 7; i++) {
 console.log(arr);
 
 for (const arrElement of arr) {
-  if (arrElement.startsWith('2') || arrElement.startsWith('4')) {
+  if (arrElement.startsWith('2') || arrElement.startsWith('4')) {  //or charAt(0)
     console.log(arrElement);
   }
 }

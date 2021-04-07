@@ -2,7 +2,7 @@
 
 let isNumber = function (n) {
   return !isNaN(parseFloat(n)) && isFinite(n);
-}
+};
 
 let start = function () {
   let money;

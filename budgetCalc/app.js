@@ -20,10 +20,6 @@ let deposit = confirm('Есть ли у вас депозит в банке?');
 let mission = 50000;
 let period = 5;
 
-
-
-
-
 let showTypeOf = function (data) {
   console.log(data, typeof data);
 };
@@ -73,7 +69,6 @@ function getTargetMonth(target, balance) {
 getTargetMonth(mission, accumulatedMonth) > 0 ?
   console.log(`Срок достижения цели, месяцев: ${getTargetMonth(mission, accumulatedMonth)}`) :
   console.log('Цель не будет достигнута');
-
 
 
 //Дневной бюджет

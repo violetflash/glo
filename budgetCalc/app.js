@@ -19,6 +19,7 @@ let addExpenses = prompt('Перечислите возможные расход
 let deposit = confirm('Есть ли у вас депозит в банке?');
 let mission = 50000;
 let period = 5;
+let expenses = {};
 
 let showTypeOf = function (data) {
   console.log(data, typeof data);
@@ -33,10 +34,6 @@ console.log(addExpenses.toLowerCase().split(','));
 
 //Суммирует расходы
 function getExpensesMonth() {
-  let expenses = {    //аккумулирующий объект с инициализированной переменной суммы для подсчета
-    sum: 0
-  };
-
   for (let i = 0; i < 2; i++) {
     let expense = prompt('Введите обязательную статью расходов:', 'штраф');
     let amount;
@@ -44,15 +41,18 @@ function getExpensesMonth() {
     do {    //проверка на число
       amount = prompt('Во сколько это обойдется?');
     } while (!isNumber(amount));
-    expenses[i] = [expense, +amount];   //Запись расхода в объект
-    expenses.sum += +amount;    //суммирование расходов
+    expenses[expense] = +amount;   //Запись расхода в объект
   }
 
   return expenses;
 }
 
-let expenses = getExpensesMonth();
-let expensesAmount = expenses.sum;
+getExpensesMonth();
+
+let expensesAmount = 0;
+for (const expensesKey in expenses) {
+  expensesAmount += expenses[expensesKey];
+}
 console.log(`сумма расходов, руб : ${expensesAmount}`);
 
 //Остаток на месяц (приход - расходы)

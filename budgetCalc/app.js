@@ -51,7 +51,8 @@ function getExpensesMonth() {
   return expenses;
 }
 
-let expensesAmount = getExpensesMonth().sum;
+let expenses = getExpensesMonth();
+let expensesAmount = expenses.sum;
 console.log(`сумма расходов, руб : ${expensesAmount}`);
 
 //Остаток на месяц (приход - расходы)

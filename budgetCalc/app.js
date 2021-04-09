@@ -30,10 +30,12 @@ let appData = {
   asking() {
     let {expenses} = this;
     let askToAddExpenses;
+
     do {
       askToAddExpenses = prompt('Перечислите возможные расходы за рассчитываемый период через запятую', 'еда, вода,' +
         ' огненная вода');
     } while (isNumber(askToAddExpenses) || typeof askToAddExpenses !== 'string');
+
     this.addExpenses = askToAddExpenses.toLowerCase().split(',');
     this.deposit = confirm('Есть ли у вас депозит в банке?');
 
@@ -44,6 +46,7 @@ let appData = {
       do {    //проверка на число
         amount = prompt('Во сколько это обойдется?');
       } while (!isNumber(amount));
+
       expenses[expense] = +amount;   //Запись расхода в объект
     }
   },

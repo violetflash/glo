@@ -28,14 +28,14 @@ let appData = {
   expensesMonth: 0,
 
   asking() {
-    let {expenses, addExpenses, deposit} = this;
+    let {expenses} = this;
     let askToAddExpenses;
     do {
       askToAddExpenses = prompt('Перечислите возможные расходы за рассчитываемый период через запятую', 'еда, вода,' +
         ' огненная вода');
     } while (isNumber(askToAddExpenses) || typeof askToAddExpenses !== 'string');
-    addExpenses = askToAddExpenses.toLowerCase().split(',');
-    deposit = confirm('Есть ли у вас депозит в банке?');
+    this.addExpenses = askToAddExpenses.toLowerCase().split(',');
+    this.deposit = confirm('Есть ли у вас депозит в банке?');
 
     for (let i = 0; i < 2; i++) {
       let expense = prompt('Введите обязательную статью расходов:', 'штраф');

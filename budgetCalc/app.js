@@ -12,10 +12,10 @@ let start = function () {
   return money;
 };
 
-// let money = start();
+let money = start();
 
 let appData = {
-  budget: start(),
+  budget: money,
   income: {},
   addIncome: [],
   expenses: {},
@@ -28,16 +28,15 @@ let appData = {
   expensesMonth: 0,
 
   asking() {
-    let {expenses} = this;
     let askToAddExpenses;
 
     do {
       askToAddExpenses = prompt('Перечислите возможные расходы за рассчитываемый период через запятую', 'еда, вода,' +
         ' огненная вода');
-    } while (isNumber(askToAddExpenses) || typeof askToAddExpenses !== 'string');
+    } while (!askToAddExpenses.trim() || !isNaN(parseFloat(askToAddExpenses)));
 
-    this.addExpenses = askToAddExpenses.toLowerCase().split(',');
-    this.deposit = confirm('Есть ли у вас депозит в банке?');
+    appData.addExpenses = askToAddExpenses.toLowerCase().split(',');
+    appData.deposit = confirm('Есть ли у вас депозит в банке?');
 
     for (let i = 0; i < 2; i++) {
       let expense = prompt('Введите обязательную статью расходов:', 'штраф');
@@ -47,28 +46,29 @@ let appData = {
         amount = prompt('Во сколько это обойдется?');
       } while (!isNumber(amount));
 
-      expenses[expense] = +amount;   //Запись расхода в объект
+      appData.expenses[expense] = +amount;   //Запись расхода в объект
     }
   },
 
   getExpensesMonth() {
-    let {expenses} = this;
-    this.expensesMonth = Object.values(expenses).reduce((accum, curr) => accum + curr); //сумма всех расходов
+    let sum = 0;
+    for (const key in appData.expenses) {
+      sum += appData.expenses[key];
+    }
+    appData.expensesMonth = sum;
   },
 
   getBudget() {
-    let {budget, expensesMonth} = this;
-    this.budgetMonth = budget - expensesMonth;
-    this.budgetDay = this.budgetMonth / 30;
+    appData.budgetMonth = appData.budget - appData.expensesMonth;
+    appData.budgetDay = appData.budgetMonth / 30;
   },
 
   getTargetMonth() {
-    let {mission, budgetMonth} = this;
-    return Math.ceil(mission / budgetMonth);
+    return Math.ceil(appData.mission / appData.budgetMonth);
   },
 
   getStatusIncome() {
-    let {budgetDay} = this;
+    let budgetDay = appData.budgetDay;
     if (budgetDay >= 1200) {
       return 'У Вас высокий уровень дохода';
     } else if (budgetDay >= 600 && budgetDay < 1200) {
@@ -90,6 +90,6 @@ console.log(`Срок достижения цели, месяцев: ${appData.g
 console.log(appData.getStatusIncome());
 
 console.log('%cНаша программа включает в себя данные:', 'color:lightgreen');
-for (const appDataKey in appData) {
-  console.log(`${appDataKey}: ${appData[appDataKey]}`);
+for (const key in appData) {
+  console.log(`${key}: ${appData[key]}`);
 }

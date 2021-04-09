@@ -12,10 +12,10 @@ let start = function () {
   return money;
 };
 
-let money = start();
+// let money = start();
 
 let appData = {
-  budget: +money,
+  budget: start(),
   income: {},
   addIncome: [],
   expenses: {},

@@ -15,7 +15,7 @@ let start = function () {
 let money = start();
 
 let appData = {
-  budget: money,
+  budget: +money,
   income: {},
   addIncome: [],
   expenses: {},
@@ -51,11 +51,9 @@ let appData = {
   },
 
   getExpensesMonth() {
-    let sum = 0;
     for (const key in appData.expenses) {
-      sum += appData.expenses[key];
+      appData.expensesMonth += appData.expenses[key];
     }
-    appData.expensesMonth = sum;
   },
 
   getBudget() {
@@ -91,5 +89,9 @@ console.log(appData.getStatusIncome());
 
 console.log('%cНаша программа включает в себя данные:', 'color:lightgreen');
 for (const key in appData) {
-  console.log(`${key}: ${appData[key]}`);
+  if (Object.keys(appData[key]).length) {
+    console.log(`${key}: ${JSON.stringify(appData[key])}`);
+  } else {
+    console.log(`${key}: ${appData[key]}`);
+  }
 }

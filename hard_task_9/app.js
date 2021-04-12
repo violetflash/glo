@@ -10,6 +10,10 @@
 4) С помощью функции setInterval, реализуйте обновление даты и времени каждую секунду
  */
 
+function checkZero(num) {
+  return ( num < 10 ) ? `0${num}` : num;
+}
+
 function hoursPhrase(hours) {
   if (Math.floor(hours / 10) !== 1) {
     if (hours % 10 === 1) return 'час';
@@ -118,8 +122,8 @@ function getDate() {
   }
 
   return `Сегодня ${dayOfWeek}, ${dayNum} ${month} ${today.getFullYear()} года, 
-  ${hours} ${hoursPhrase(hours)} ${minutes} ${minSecPhrase(minutes, 'минут')} 
-  ${seconds} ${minSecPhrase(seconds, 'секунд')}`.replace(/\n/g, '');
+  ${hours} ${hoursPhrase(hours)} ${checkZero(minutes)} ${minSecPhrase(minutes, 'минут')} 
+  ${checkZero(seconds)} ${minSecPhrase(seconds, 'секунд')}`.replace(/\n/g, '');
 }
 
 document.querySelector('.time1').innerText = getDate();
@@ -137,10 +141,6 @@ function getDate2() {
   let hours = today.getHours();
   let minutes = today.getMinutes();
   let seconds = today.getSeconds();
-
-  function checkZero(num) {
-    return ( num < 10 ) ? `0${num}` : num;
-  }
 
   return `${checkZero(day)}.${checkZero(month)}.${year} - ${checkZero(hours)}:${checkZero(minutes)}:${checkZero(seconds)}`;
 }

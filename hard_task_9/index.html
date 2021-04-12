@@ -5,6 +5,16 @@
   <title>hard task 9</title>
 </head>
 <style>
+  body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .box {
+    margin-top: 20px;
+    position: relative;
+    width: calc(100% - 600px / 2);
+  }
   .time {
     font-size: 24px;
     position: relative;
@@ -25,8 +35,10 @@
 <body>
 
 
-  <div class="time time1"></div>
-  <div class="time time2"></div>
+  <div class="box">
+    <div class="time time1"></div>
+    <div class="time time2"></div>
+  </div>
   <script src="app.js"></script>
 </body>
 </html>

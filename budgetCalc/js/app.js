@@ -132,3 +132,40 @@ for (const key in appData) {
 console.log(appData.addExpenses.map((word) => {
   return word[0].toUpperCase() + word.slice(1);
 }).join(','));
+
+
+//Кнопку "Рассчитать" через id
+const calculate = document.getElementById('start');
+
+//Кнопки “+” (плюс) через Tag, каждую в своей переменной.
+const addIncome = document.getElementsByTagName('button')[0];
+const addExpenses = document.getElementsByTagName('button')[1];
+
+//Чекбокс по id через querySelector
+const checkDeposit = document.querySelector('#deposit-check');
+
+//Поля для ввода возможных доходов (additional_income-item) при помощи querySelectorAll
+const moreIncomes1 = document.querySelectorAll('.additional_income-item')[0];
+const moreIncomes2 = document.querySelectorAll('.additional_income-item')[1];
+
+//Каждый элемент в правой части программы через класс(не через querySelector), которые имеют в имени класса "-value",
+// начиная с class="budget_day-value" и заканчивая class="target_month-value">
+const budgetMonth = document.getElementsByClassName('result-total')[0];
+const budgetDay = document.getElementsByClassName('result-total')[1];
+const expensesMonth = document.getElementsByClassName('result-total')[2];
+const additionalIncome = document.getElementsByClassName('result-total')[3];
+const additionalExpensesValue = document.getElementsByClassName('result-total')[4];
+const incomePeriod = document.getElementsByClassName('result-total')[5];
+const targetMonth = document.getElementsByClassName('result-total')[6];
+
+//Оставшиеся поля через querySelector каждый в отдельную переменную:
+const salaryAmount = document.querySelector('.salary-amount');
+const incomeTitle = document.querySelector('.income-title');
+const incomeAmount = document.querySelector('.income-amount');
+const expensesTitle = document.querySelector('.expenses-title');
+const expensesAmount = document.querySelector('.expenses-amount');
+const additionalExpensesItem = document.querySelector('.additional_expenses-item');
+const depositAmount = document.querySelector('.deposit-amount');
+const depositPercent = document.querySelector('.deposit-percent');
+const targetAmount = document.querySelector('.target-amount');
+const periodSelect = document.querySelector('.period-select');

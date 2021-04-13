@@ -122,7 +122,7 @@ function getDate() {
   }
 
   return `Сегодня ${dayOfWeek}, ${dayNum} ${month} ${today.getFullYear()} года, 
-  ${hours} ${hoursPhrase(hours)} ${checkZero(minutes)} ${minSecPhrase(minutes, 'минут')} 
+  ${checkZero(hours)} ${hoursPhrase(hours)} ${checkZero(minutes)} ${minSecPhrase(minutes, 'минут')} 
   ${checkZero(seconds)} ${minSecPhrase(seconds, 'секунд')}`.replace(/\n/g, '');
 }
 

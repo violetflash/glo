@@ -38,8 +38,8 @@ const targetAmount = document.querySelector('.target-amount');
 const periodSelect = document.querySelector('.period-select');
 const periodAmount = document.querySelector('.period-amount');
 
-const wordInputs = document.querySelectorAll("input[placeholder='Наименование']");
-const digitInputs = document.querySelectorAll("input[placeholder='Сумма']");
+let nameInputs = document.querySelectorAll("input[placeholder='Наименование']");
+let digitInputs = document.querySelectorAll("input[placeholder='Сумма']");
 
 let isNumber = function (n) {
   return !isNaN(parseFloat(n)) && isFinite(n);
@@ -226,23 +226,37 @@ salaryAmount.addEventListener('input', () => {
   }
 });
 
-//  Поля с placeholder="Наименование" разрешить ввод только русских букв пробелов и знаков препинания
-wordInputs.forEach((elem) => {
-  elem.addEventListener('input', function(e) {
-    elem.value = elem.value.replace(/[^а-яА-Я\s,.]/g, '');
+
+function validateInputs(names, digits) {
+  names.forEach((elem) => {
+    elem.addEventListener('input', function(e) {
+      elem.value = elem.value.replace(/[^а-яА-Я\s,.]/g, '');
+    });
   });
+  digits.forEach((elem) => {
+    elem.addEventListener('input', function(e) {
+      elem.value = elem.value.replace(/[^\d]/g, '');
+    });
+  });
+}
+
+validateInputs(nameInputs, digitInputs);
+
+expensesPlus.addEventListener('click', () => {
+  appData.addExpensesBlock();
+  nameInputs = document.querySelectorAll("input[placeholder='Наименование']");
+  digitInputs = document.querySelectorAll("input[placeholder='Сумма']");
+  validateInputs(nameInputs, digitInputs);
 });
 
-// Поля с placeholder="Сумма" разрешить ввод только цифр
-digitInputs.forEach((elem) => {
-  elem.addEventListener('input', function(e) {
-    elem.value = elem.value.replace(/[^\d]/g, '');
-  });
+
+incomePlus.addEventListener('click', () => {
+  appData.addIncomeBlock();
+  nameInputs = document.querySelectorAll("input[placeholder='Наименование']");
+  digitInputs = document.querySelectorAll("input[placeholder='Сумма']");
+  validateInputs(nameInputs, digitInputs);
 });
 
-
-expensesPlus.addEventListener('click', appData.addExpensesBlock);
-incomePlus.addEventListener('click', appData.addIncomeBlock);
 periodSelect.addEventListener('change', () => {
   periodAmount.innerText = periodSelect.value;
 });

@@ -248,6 +248,7 @@ li::before {
 
 li:focus {
     outline: 2px solid steelblue;
+    background-color: #f5f5c8;
 }
 
 .edit-input {

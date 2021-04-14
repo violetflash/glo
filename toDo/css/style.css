@@ -135,7 +135,7 @@ body {
     position: relative;
     box-shadow: 0 1px 2px rgba(44, 62, 80, 0.10);
     margin: 0 0 10px 0;
-    padding: 14px 100px 14px 24px;
+    padding: 14px 150px 14px 24px;
     word-break: break-word;
 }
 
@@ -144,7 +144,7 @@ body {
 }
 
 .todo-buttons {
-    width: 100px;
+    width: 150px;
     height: 50px;
 
     position: absolute;
@@ -188,9 +188,16 @@ body {
     background-image: url("../img/uncheck.png");
 }
 
+.todo-edit {
+    background-image: url("../img/edit.png");
+    background-size: 30px;
+}
+
 .todo-completed .todo-complete {
     background-image: url("../img/check.png");
 }
+
+
 
 .todo-completed {
     position: relative;
@@ -237,4 +244,11 @@ li::before {
     font-size: 16px;
     font-weight: 700;
     color: steelblue;
+}
+
+.edit-input {
+    background-color: #eed5d5;
+    border: none;
+    width: 100%;
+    /*height: 100px;*/
 }

@@ -22,6 +22,7 @@ const render = function() {
       <div class="todo-buttons">
         <button class="todo-remove"></button>
         <button class="todo-complete"></button>
+        <button class="todo-edit"></button>
       </div>
     `;
 
@@ -45,6 +46,34 @@ const render = function() {
       render();
     });
 
+    const todoEdit = li.querySelector('.todo-edit');
+    todoEdit.addEventListener('click', function(e) {
+      if (li.hasAttribute('contentEditable')) {
+        li.removeAttribute('contentEditable');
+        item.value = li.innerText;
+        localStorage.setItem('todoData', JSON.stringify(todoData));
+        render();
+      } else {
+        li.setAttribute("contentEditable", true);
+        li.focus();
+        li.addEventListener('keyup', function(e) {
+          if (e.key === 'Enter') {
+            item.value = li.innerText;
+            localStorage.setItem('todoData', JSON.stringify(todoData));
+            render();
+          }
+        });
+      }
+
+      // const span = li.querySelector('.text-todo');
+      // const input = document.createElement('input');
+      // input.classList.add('edit-input');
+      // input.value = span.textContent;
+      //
+      // input.focus();
+      // span.innerHTML = '';
+      // span.insertAdjacentElement('afterbegin', input);
+    });
   });
 };
 

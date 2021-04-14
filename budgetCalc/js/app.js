@@ -1,6 +1,6 @@
 'use strict';
 
-//TODO ОЧИЩАТЬ ПОЛЯ РЕЗУЛЬТАТОВ ПРИ ПОВТОРНОМ НАЖАТИИ КНОПКИ РАССЧИТАТЬ
+//TODO CAPITALIZE ADDITIONAL INCOMES AND EXPENSES
 
 //Кнопку "Рассчитать" через id
 const start = document.getElementById('start');
@@ -151,7 +151,7 @@ let appData = {
     addExpenses.forEach((item) => {
       item = item.trim();
       if (item !== '') {
-        appData.addExpenses.push(item);
+        appData.addExpenses.push(item[0].toUpperCase() + item.slice(1));
       }
     });
   },
@@ -160,7 +160,7 @@ let appData = {
     addIncomeItems.forEach((item) => {
       let itemValue = item.value.trim();
       if (itemValue !== '') {
-        appData.addIncome.push(itemValue);
+        appData.addIncome.push(itemValue[0].toUpperCase() + itemValue.slice(1));
       }
     });
   },
@@ -260,6 +260,6 @@ periodSelect.addEventListener('change', () => {
 //   }
 // }
 //
-// console.log(appData.addExpenses.map((word) => {
-//   return word[0].toUpperCase() + word.slice(1);
-// }).join(','));
+console.log(appData.addExpenses.map((word) => {
+  return word[0].toUpperCase() + word.slice(1);
+}).join(','));

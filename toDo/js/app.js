@@ -85,6 +85,7 @@ todoControl.addEventListener('submit', (e) => {
     completed: false,
   };
   if (newTodo.value) {
+    newTodo.value = newTodo.value[0].toUpperCase() + newTodo.value.slice(1);
     todoData.push(newTodo);
   }
   localStorage.setItem('todoData', JSON.stringify(todoData));

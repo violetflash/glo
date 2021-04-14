@@ -16,6 +16,7 @@ const render = function() {
   todoData.forEach((item, index) => {
     const li = document.createElement('li');
     li.classList.add('todo-item');
+    li.setAttribute('data-counter', `${index + 1})`);
     li.innerHTML = `
       <span class="text-todo">${item.value}</span>
       <div class="todo-buttons">

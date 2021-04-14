@@ -90,10 +90,15 @@ let appData = {
     });
   },
 
-  clearResults() {
-    results.forEach((item) => {
-      item.value = '';
-    });
+  clearData() {
+    appData.budget = 0;
+    appData.income = {};
+    appData.incomeMonth = 0;
+    appData.expenses = {};
+    // appData.budgetMonth = 0;
+    // appData.expensesMonth = 0;
+    appData.addIncome = [];
+    appData.addExpenses = [];
   },
 
   addExpensesBlock() {
@@ -206,13 +211,6 @@ let appData = {
   }
 };
 
-// if (salaryAmount.value === '') {
-//   start.setAttribute('disabled', true);
-// } else {
-//   start.removeAttribute('disabled');
-//   start.addEventListener('click', appData.start);
-// }
-
 window.addEventListener('DOMContentLoaded', () => {
   start.setAttribute('disabled', 'true');
 });
@@ -222,8 +220,11 @@ salaryAmount.addEventListener('input', () => {
     start.setAttribute('disabled', 'true');
   } else {
     start.removeAttribute('disabled');
-    start.addEventListener('click', appData.clearResults);
-    start.addEventListener('click', appData.start);
+    start.addEventListener('click', () => {
+      appData.clearData();
+      appData.start();
+    });
+
   }
 });
 

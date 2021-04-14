@@ -64,15 +64,12 @@ const render = function() {
           }
         });
       }
+    });
 
-      // const span = li.querySelector('.text-todo');
-      // const input = document.createElement('input');
-      // input.classList.add('edit-input');
-      // input.value = span.textContent;
-      //
-      // input.focus();
-      // span.innerHTML = '';
-      // span.insertAdjacentElement('afterbegin', input);
+    document.addEventListener('click', e => {
+      if (!li.contains(e.target)) {
+        li.removeAttribute('contentEditable');
+      }
     });
   });
 };

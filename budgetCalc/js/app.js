@@ -1,7 +1,5 @@
 'use strict';
 
-//TODO CAPITALIZE ADDITIONAL INCOMES AND EXPENSES
-
 //Кнопку "Рассчитать" через id
 const start = document.getElementById('start');
 
@@ -40,11 +38,6 @@ const periodAmount = document.querySelector('.period-amount');
 
 const wordInputs = document.querySelectorAll("input[placeholder='Наименование']");
 const digitInputs = document.querySelectorAll("input[placeholder='Сумма']");
-
-let isNumber = function (n) {
-  return !isNaN(parseFloat(n)) && isFinite(n);
-};
-
 
 let appData = {
   budget: 0,
@@ -110,6 +103,7 @@ let appData = {
       expensesPlus.style.display = 'none';
     }
   },
+
 
   getExpenses() {
     expensesItems.forEach((item) => {

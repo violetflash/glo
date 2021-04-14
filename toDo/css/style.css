@@ -247,7 +247,9 @@ li::before {
 }
 
 li:focus {
-    outline: 2px solid steelblue;
+    /*outline: 2px solid steelblue;*/
+    outline: none;
+    box-shadow: 0 0 3pt 2pt steelblue;
     background-color: #f5f5c8;
 }
 

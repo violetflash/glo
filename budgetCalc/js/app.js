@@ -95,8 +95,8 @@ let appData = {
     appData.income = {};
     appData.incomeMonth = 0;
     appData.expenses = {};
-    // appData.budgetMonth = 0;
-    // appData.expensesMonth = 0;
+    appData.budgetMonth = 0;
+    appData.expensesMonth = 0;
     appData.addIncome = [];
     appData.addExpenses = [];
   },

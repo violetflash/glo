@@ -33,6 +33,7 @@ const render = function() {
     const todoComplete = li.querySelector('.todo-complete');
     todoComplete.addEventListener('click', () => {
       item.completed = !item.completed;
+      localStorage.setItem('todoData', JSON.stringify(todoData));
       render();
     });
 
@@ -53,7 +54,9 @@ todoControl.addEventListener('submit', (e) => {
     value: headerInput.value.trim(),
     completed: false,
   };
-  if (newTodo.value) todoData.push(newTodo);
+  if (newTodo.value) {
+    todoData.push(newTodo);
+  }
   localStorage.setItem('todoData', JSON.stringify(todoData));
   headerInput.value = '';
   render();

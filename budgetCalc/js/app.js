@@ -1,70 +1,165 @@
 'use strict';
 
+//TODO ОЧИЩАТЬ ПОЛЯ РЕЗУЛЬТАТОВ ПРИ ПОВТОРНОМ НАЖАТИИ КНОПКИ РАССЧИТАТЬ
+
+//Кнопку "Рассчитать" через id
+const start = document.getElementById('start');
+
+//Кнопки “+” (плюс) через Tag, каждую в своей переменной.
+const incomePlus = document.getElementsByTagName('button')[0];
+const expensesPlus = document.getElementsByTagName('button')[1];
+
+//Чекбокс по id через querySelector
+const checkDeposit = document.querySelector('#deposit-check');
+
+//Поля для ввода возможных доходов (additional_income-item) при помощи querySelectorAll
+let addIncomeItems = document.querySelectorAll('.additional_income-item');
+
+//Каждый элемент в правой части программы через класс(не через querySelector), которые имеют в имени класса "-value",
+// начиная с class="budget_day-value" и заканчивая class="target_month-value">
+const results = document.querySelectorAll('.result-total');
+const budgetMonth = document.getElementsByClassName('result-total')[0];
+const budgetDay = document.getElementsByClassName('result-total')[1];
+const expensesMonth = document.getElementsByClassName('result-total')[2];
+const additionalIncome = document.getElementsByClassName('result-total')[3];
+const additionalExpensesValue = document.getElementsByClassName('result-total')[4];
+const incomePeriod = document.getElementsByClassName('result-total')[5];
+const targetMonth = document.getElementsByClassName('result-total')[6];
+
+//Оставшиеся поля через querySelector каждый в отдельную переменную:
+const salaryAmount = document.querySelector('.salary-amount');
+let incomeItems = document.querySelectorAll('.income-items');
+const expensesTitle = document.querySelector('.expenses-title');
+let expensesItems = document.querySelectorAll('.expenses-items');
+const additionalExpensesItem = document.querySelector('.additional_expenses-item');
+const depositAmount = document.querySelector('.deposit-amount');
+const depositPercent = document.querySelector('.deposit-percent');
+const targetAmount = document.querySelector('.target-amount');
+const periodSelect = document.querySelector('.period-select');
+const periodAmount = document.querySelector('.period-amount');
+
+const wordInputs = document.querySelectorAll("input[placeholder='Наименование']");
+const digitInputs = document.querySelectorAll("input[placeholder='Сумма']");
+
 let isNumber = function (n) {
   return !isNaN(parseFloat(n)) && isFinite(n);
 };
 
-let start = function () {
-  let money;
-  do {
-    money = prompt('Ваш месячный доход?');
-  } while (!isNumber(money));
-  return money;
-};
-
-let money = start();
 
 let appData = {
-  budget: +money,
+  budget: 0,
   income: {},
+  incomeMonth: 0,
   addIncome: [],
   expenses: {},
   addExpenses: [],
   deposit: false,
   percentDeposit: 0,
   moneyDeposit: 0,
-  mission: 50000,
-  period: 5,
   budgetDay: 0,
   budgetMonth: 0,
   expensesMonth: 0,
 
-  asking() {
-    let askToAddExpenses;
+  start() {
 
-    if (confirm('Есть ли у вас дополнительный заработок?')) {
-      let itemIncome;
-      let cashIncome;
+    appData.budget = +salaryAmount.value;
 
-      do {
-        itemIncome = prompt('Какой у вас дополнительный заработок?', 'Такси');
-      } while (!itemIncome.trim() || !isNaN(parseFloat(itemIncome)));
 
-      do {
-        cashIncome = prompt('Сколько в месяц вы на этом зарабатываете?', 10000);
-      } while (!isNumber(cashIncome));
+    appData.getExpenses();
+    appData.getAddIncome();
+    appData.getExpensesMonth();
+    appData.getAddExpenses();
+    appData.getIncome();
+    appData.getBudget();
+    appData.getInfoDeposit();
 
-      appData.income[itemIncome] = +cashIncome;
+    appData.showResult();
+  },
+
+  showResult() {
+    budgetMonth.value = appData.budgetMonth;
+    budgetDay.value = appData.budgetDay;
+    expensesMonth.value = appData.expensesMonth;
+    additionalExpensesValue.value = appData.addExpenses.join(', ');
+    additionalIncome.value = appData.addIncome.join(', ');
+    targetMonth.value = appData.getTargetMonth();
+    incomePeriod.value = appData.calcSavedMoney();
+
+    periodSelect.addEventListener('change', () => {
+      incomePeriod.value = appData.calcSavedMoney();
+    });
+  },
+
+  clearResults() {
+    results.forEach((item) => {
+      item.value = '';
+    });
+  },
+
+  addExpensesBlock() {
+    let cloneExpensesItem = expensesItems[0].cloneNode(true);
+    let cloneInputs = cloneExpensesItem.querySelectorAll('input');
+    cloneInputs.forEach(elem => elem.value = '');
+    expensesItems[0].parentNode.insertBefore(cloneExpensesItem, expensesPlus);
+
+    expensesItems = document.querySelectorAll('.expenses-items');
+    if (expensesItems.length === 3) {
+      expensesPlus.style.display = 'none';
     }
+  },
 
-    do {
-      askToAddExpenses = prompt('Перечислите возможные расходы за рассчитываемый период через запятую', 'еда, вода,' +
-        ' огненная вода');
-    } while (!askToAddExpenses.trim() || !isNaN(parseFloat(askToAddExpenses)));
+  getExpenses() {
+    expensesItems.forEach((item) => {
+      let itemExpenses = item.querySelector('.expenses-title').value;
+      let cashExpenses = item.querySelector('.expenses-amount').value;
+      if (itemExpenses !== '' && cashExpenses !== '') {
+        appData.expenses[itemExpenses] = +cashExpenses;
+      }
+    });
+  },
 
-    appData.addExpenses = askToAddExpenses.toLowerCase().split(',');
-    appData.deposit = confirm('Есть ли у вас депозит в банке?');
+  addIncomeBlock() {
+    let cloneAddIncomeItem = incomeItems[0].cloneNode(true);
+    let cloneInputs = cloneAddIncomeItem.querySelectorAll('input');
+    cloneInputs.forEach(elem => elem.value = '');
+    incomeItems[0].parentNode.insertBefore(cloneAddIncomeItem, incomePlus);
 
-    for (let i = 0; i < 2; i++) {
-      let expense = prompt('Введите обязательную статью расходов:', 'штраф');
-      let amount;
-
-      do {    //проверка на число
-        amount = prompt('Во сколько это обойдется?');
-      } while (!isNumber(amount));
-
-      appData.expenses[expense] = +amount;   //Запись расхода в объект
+    incomeItems = document.querySelectorAll('.income-items');
+    if (incomeItems.length === 3) {
+      incomePlus.style.display = 'none';
     }
+  },
+
+  getIncome() {
+    incomeItems.forEach((item) => {
+      let itemIncome = item.querySelector('.income-title').value;
+      let cashIncome = item.querySelector('.income-amount').value;
+      if (itemIncome !== '' && cashIncome !== '') {
+        appData.income[itemIncome] = +cashIncome;
+      }
+    });
+    for (const key in appData.income) {
+      appData.incomeMonth += +appData.income[key];
+    }
+  },
+
+  getAddExpenses() {
+    let addExpenses = additionalExpensesItem.value.split(',');
+    addExpenses.forEach((item) => {
+      item = item.trim();
+      if (item !== '') {
+        appData.addExpenses.push(item);
+      }
+    });
+  },
+
+  getAddIncome() {
+    addIncomeItems.forEach((item) => {
+      let itemValue = item.value.trim();
+      if (itemValue !== '') {
+        appData.addIncome.push(itemValue);
+      }
+    });
   },
 
   getExpensesMonth() {
@@ -74,12 +169,12 @@ let appData = {
   },
 
   getBudget() {
-    appData.budgetMonth = appData.budget - appData.expensesMonth;
-    appData.budgetDay = appData.budgetMonth / 30;
+    appData.budgetMonth = appData.budget + appData.incomeMonth - appData.expensesMonth;
+    appData.budgetDay = Math.round(appData.budgetMonth / 30);
   },
 
   getTargetMonth() {
-    return Math.ceil(appData.mission / appData.budgetMonth);
+    return Math.ceil(+targetAmount.value / appData.budgetMonth);
   },
 
   getStatusIncome() {
@@ -107,65 +202,65 @@ let appData = {
   },
 
   calcSavedMoney() {
-    return appData.budgetMonth * appData.period;
+    return appData.budgetMonth * periodSelect.value;
   }
 };
 
-appData.asking();
-appData.getExpensesMonth();
-appData.getBudget();
-appData.getInfoDeposit();
+// if (salaryAmount.value === '') {
+//   start.setAttribute('disabled', true);
+// } else {
+//   start.removeAttribute('disabled');
+//   start.addEventListener('click', appData.start);
+// }
 
-console.log(`Расходы за месяц: ${appData.expensesMonth}`);
-console.log(`Срок достижения цели, месяцев: ${appData.getTargetMonth()}`);
-console.log(appData.getStatusIncome());
+window.addEventListener('DOMContentLoaded', () => {
+  start.setAttribute('disabled', 'true');
+});
 
-console.log('%cНаша программа включает в себя данные:', 'color:lightgreen');
-for (const key in appData) {
-  if (Object.keys(appData[key]).length) {
-    console.log(`${key}: ${JSON.stringify(appData[key])}`);
+salaryAmount.addEventListener('input', () => {
+  if (!salaryAmount.value) {
+    start.setAttribute('disabled', 'true');
   } else {
-    console.log(`${key}: ${appData[key]}`);
+    start.removeAttribute('disabled');
+    start.addEventListener('click', appData.clearResults);
+    start.addEventListener('click', appData.start);
   }
-}
+});
 
-console.log(appData.addExpenses.map((word) => {
-  return word[0].toUpperCase() + word.slice(1);
-}).join(','));
+//  Поля с placeholder="Наименование" разрешить ввод только русских букв пробелов и знаков препинания
+wordInputs.forEach((elem) => {
+  elem.addEventListener('input', function(e) {
+    elem.value = elem.value.replace(/[^а-яА-Я\s,.]/g, '');
+  });
+});
+
+// Поля с placeholder="Сумма" разрешить ввод только цифр
+digitInputs.forEach((elem) => {
+  elem.addEventListener('input', function(e) {
+    elem.value = elem.value.replace(/[^\d]/g, '');
+  });
+});
 
 
-//Кнопку "Рассчитать" через id
-const calculate = document.getElementById('start');
+expensesPlus.addEventListener('click', appData.addExpensesBlock);
+incomePlus.addEventListener('click', appData.addIncomeBlock);
+periodSelect.addEventListener('change', () => {
+  periodAmount.innerText = periodSelect.value;
+});
 
-//Кнопки “+” (плюс) через Tag, каждую в своей переменной.
-const addIncome = document.getElementsByTagName('button')[0];
-const addExpenses = document.getElementsByTagName('button')[1];
 
-//Чекбокс по id через querySelector
-const checkDeposit = document.querySelector('#deposit-check');
 
-//Поля для ввода возможных доходов (additional_income-item) при помощи querySelectorAll
-const moreIncomes1 = document.querySelectorAll('.additional_income-item')[0];
-const moreIncomes2 = document.querySelectorAll('.additional_income-item')[1];
 
-//Каждый элемент в правой части программы через класс(не через querySelector), которые имеют в имени класса "-value",
-// начиная с class="budget_day-value" и заканчивая class="target_month-value">
-const budgetMonth = document.getElementsByClassName('result-total')[0];
-const budgetDay = document.getElementsByClassName('result-total')[1];
-const expensesMonth = document.getElementsByClassName('result-total')[2];
-const additionalIncome = document.getElementsByClassName('result-total')[3];
-const additionalExpensesValue = document.getElementsByClassName('result-total')[4];
-const incomePeriod = document.getElementsByClassName('result-total')[5];
-const targetMonth = document.getElementsByClassName('result-total')[6];
 
-//Оставшиеся поля через querySelector каждый в отдельную переменную:
-const salaryAmount = document.querySelector('.salary-amount');
-const incomeTitle = document.querySelector('.income-title');
-const incomeAmount = document.querySelector('.income-amount');
-const expensesTitle = document.querySelector('.expenses-title');
-const expensesAmount = document.querySelector('.expenses-amount');
-const additionalExpensesItem = document.querySelector('.additional_expenses-item');
-const depositAmount = document.querySelector('.deposit-amount');
-const depositPercent = document.querySelector('.deposit-percent');
-const targetAmount = document.querySelector('.target-amount');
-const periodSelect = document.querySelector('.period-select');
+// console.log('%cНаша программа включает в себя данные:', 'color:lightgreen');
+// for (const key in appData) {
+//   if (Object.keys(appData[key]).length) {
+//     console.log(`${key}: ${JSON.stringify(appData[key])}`);
+//   } else {
+//     console.log(`${key}: ${appData[key]}`);
+//   }
+// }
+//
+// console.log(appData.addExpenses.map((word) => {
+//   return word[0].toUpperCase() + word.slice(1);
+// }).join(','));

@@ -249,6 +249,7 @@ cancel.addEventListener('click', () => {
   cancelFunc();
   cancel.style.display = 'none';
   start.style.display = 'inline-block';
+  start.setAttribute('disabled', 'true');
 });
 
 

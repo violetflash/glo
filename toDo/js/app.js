@@ -56,7 +56,7 @@ const render = function() {
       } else {
         li.setAttribute("contentEditable", true);
         li.focus();
-        li.addEventListener('keyup', function(e) {
+        li.addEventListener('keypress', function(e) {
           if (e.key === 'Enter') {
             item.value = li.innerText;
             localStorage.setItem('todoData', JSON.stringify(todoData));

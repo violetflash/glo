@@ -62,7 +62,7 @@ let appData = {
 
   start() {
     console.log(this);
-    this.reset();
+
     this.budget = +salaryAmount.value;
 
     this.getExpenses();
@@ -85,6 +85,21 @@ let appData = {
     this.expensesMonth = 0;
     this.addIncome = [];
     this.addExpenses = [];
+
+    document.querySelectorAll('input[type="text"]').forEach(elem => {
+      elem.value = '';
+      elem.removeAttribute('disabled');
+    });
+
+    [incomeItems, expensesItems].forEach((list) => {
+      list.forEach((elem, index) => {
+        if (index > 0) elem.remove();
+      });
+    });
+    incomePlus.style.display = 'block';
+    expensesPlus.style.display = 'block';
+    periodSelect.value = 1;
+    periodAmount.textContent = periodSelect.value;
   },
 
   showResult() {
@@ -232,10 +247,6 @@ start.addEventListener('click', () => {
 let cancelFunc = appData.reset.bind(appData);
 cancel.addEventListener('click', () => {
   cancelFunc();
-  document.querySelectorAll('input[type="text"]').forEach(elem => {
-    elem.value = '';
-    elem.removeAttribute('disabled');
-  });
   cancel.style.display = 'none';
   start.style.display = 'inline-block';
 });

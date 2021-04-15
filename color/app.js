@@ -16,7 +16,6 @@ function getRandHexColor(array) {
 
 btn.addEventListener('click', function(e) {
   const color = getRandHexColor(hexadecimals);
-  console.log(color);
   colorCode.innerText = color;
   document.body.style.backgroundColor = color;
 });

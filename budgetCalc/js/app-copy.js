@@ -40,6 +40,18 @@ let periodAmount = document.querySelector('.period-amount');
 let nameInputs = document.querySelectorAll("input[placeholder='Наименование']");
 let digitInputs = document.querySelectorAll("input[placeholder='Сумма']");
 
+function validateInputs(names, digits) {
+  names.forEach(function(elem) {
+    elem.addEventListener('input', function(e) {
+      elem.value = elem.value.replace(/[^а-яА-Я\s,.]/g, '');
+    });
+  });
+  digits.forEach(function(elem) {
+    elem.addEventListener('input', function(e) {
+      elem.value = elem.value.replace(/[^\d]/g, '');
+    });
+  });
+}
 
 let isNumber = function (n) {
   return !isNaN(parseFloat(n)) && isFinite(n);
@@ -69,8 +81,13 @@ let appData = {
     this.getIncome();
     this.getBudget();
     this.getInfoDeposit();
+    this.showResult();
 
-    appData.showResult();
+    start.style.display = 'none';
+    cancel.style.display = 'inline-block';
+    [periodSelect, expensesPlus, incomePlus, ...document.querySelectorAll('input[type="text"]')].forEach(function(elem) {
+      elem.setAttribute('disabled', 'true');
+    });
   },
 
   reset() {
@@ -90,7 +107,6 @@ let appData = {
       elem.removeAttribute('disabled');
     });
 
-
     [incomeItems, expensesItems].forEach(function(list) {
       list.forEach(function(elem, index) {
         if (index > 0) elem.remove();
@@ -100,6 +116,15 @@ let appData = {
     expensesPlus.style.display = 'block';
     periodSelect.value = 1;
     periodAmount.textContent = periodSelect.value;
+
+    cancel.style.display = 'none';
+    start.style.display = 'inline-block';
+    start.setAttribute('disabled', 'true');
+  },
+
+  check() {
+    salaryAmount.value ? start.removeAttribute('disabled') :
+      start.setAttribute('disabled', 'true');
   },
 
   showResult() {
@@ -128,6 +153,9 @@ let appData = {
     if (expensesItems.length === 3) {
       expensesPlus.style.display = 'none';
     }
+    nameInputs = document.querySelectorAll("input[placeholder='Наименование']");
+    digitInputs = document.querySelectorAll("input[placeholder='Сумма']");
+    validateInputs(nameInputs, digitInputs);
   },
 
   getExpenses() {
@@ -152,6 +180,10 @@ let appData = {
     if (incomeItems.length === 3) {
       incomePlus.style.display = 'none';
     }
+
+    nameInputs = document.querySelectorAll("input[placeholder='Наименование']");
+    digitInputs = document.querySelectorAll("input[placeholder='Сумма']");
+    validateInputs(nameInputs, digitInputs);
   },
 
   getIncome() {
@@ -232,65 +264,21 @@ let appData = {
   },
 };
 
-window.addEventListener('DOMContentLoaded', function() {
-  start.setAttribute('disabled', 'true');
-});
 
-salaryAmount.addEventListener('input', function() {
-  salaryAmount.value ? start.removeAttribute('disabled') :
-    start.setAttribute('disabled', 'true');
-});
-
-
-
-start.addEventListener('click', function() {
-  appData.start.call(appData);
-  start.style.display = 'none';
-  cancel.style.display = 'inline-block';
-  [periodSelect, expensesPlus, incomePlus, ...document.querySelectorAll('input[type="text"]')].forEach(function(elem) {
-    elem.setAttribute('disabled', 'true');
-  });
-});
-
-
-cancel.addEventListener('click', function() {
-  appData.reset.call(appData);
-  cancel.style.display = 'none';
-  start.style.display = 'inline-block';
-  start.setAttribute('disabled', 'true');
-});
-
-
-
-function validateInputs(names, digits) {
-  names.forEach(function(elem) {
-    elem.addEventListener('input', function(e) {
-      elem.value = elem.value.replace(/[^а-яА-Я\s,.]/g, '');
-    });
-  });
-  digits.forEach(function(elem) {
-    elem.addEventListener('input', function(e) {
-      elem.value = elem.value.replace(/[^\d]/g, '');
-    });
-  });
-}
-
+start.setAttribute('disabled', 'true');
 validateInputs(nameInputs, digitInputs);
 
-expensesPlus.addEventListener('click', function() {
-  appData.addExpensesBlock();
-  nameInputs = document.querySelectorAll("input[placeholder='Наименование']");
-  digitInputs = document.querySelectorAll("input[placeholder='Сумма']");
-  validateInputs(nameInputs, digitInputs);
-});
+
+salaryAmount.addEventListener('input', appData.check);
 
 
-incomePlus.addEventListener('click', function() {
-  appData.addIncomeBlock();
-  nameInputs = document.querySelectorAll("input[placeholder='Наименование']");
-  digitInputs = document.querySelectorAll("input[placeholder='Сумма']");
-  validateInputs(nameInputs, digitInputs);
-});
+
+start.addEventListener('click', appData.start.bind(appData));
+cancel.addEventListener('click', appData.reset.bind(appData));
+
+
+expensesPlus.addEventListener('click', appData.addExpensesBlock);
+incomePlus.addEventListener('click', appData.addIncomeBlock);
 
 periodSelect.addEventListener('change', function() {
   periodAmount.innerText = periodSelect.value;

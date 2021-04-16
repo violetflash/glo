@@ -85,7 +85,7 @@ let appData = {
 
     start.style.display = 'none';
     cancel.style.display = 'inline-block';
-    [periodSelect, expensesPlus, incomePlus, ...document.querySelectorAll('input[type="text"]')].forEach(function(elem) {
+    [expensesPlus, incomePlus, ...document.querySelectorAll('input[type="text"]')].forEach(function(elem) {
       elem.setAttribute('disabled', 'true');
     });
   },

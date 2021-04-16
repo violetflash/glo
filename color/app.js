@@ -2,20 +2,17 @@
 
 const colorCode = document.querySelector('.color-code');
 const btn = document.querySelector('.btn');
-const hexadecimals = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'];
 
-function getRandHexColor(array) {
-  let str = '#';
-  for (let i = 0; i < 6; i++) {
-    const num = Math.floor(Math.random() * array.length);
-    const char = array[num];
-    str += char;
-  }
-  return str;
+function getRandRgbColor() {
+  return Math.floor(Math.random() * 256);
 }
 
 btn.addEventListener('click', function(e) {
-  const color = getRandHexColor(hexadecimals);
-  colorCode.innerText = color;
-  document.body.style.backgroundColor = color;
+  let color1 = getRandRgbColor().toString(16);
+  let color2 = getRandRgbColor().toString(16);
+  let color3 = getRandRgbColor().toString(16);
+  let hexColor = `#${color1}${color2}${color3}`;
+
+  colorCode.innerText = hexColor;
+  document.body.style.backgroundColor = hexColor;
 });

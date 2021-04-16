@@ -270,22 +270,14 @@ validateInputs(nameInputs, digitInputs);
 
 
 salaryAmount.addEventListener('input', appData.check);
-
-
-
 start.addEventListener('click', appData.start.bind(appData));
 cancel.addEventListener('click', appData.reset.bind(appData));
-
-
 expensesPlus.addEventListener('click', appData.addExpensesBlock);
 incomePlus.addEventListener('click', appData.addIncomeBlock);
 
 periodSelect.addEventListener('change', function() {
   periodAmount.innerText = periodSelect.value;
 });
-
-
-
 
 
 // console.log('%cНаша программа включает в себя данные:', 'color:lightgreen');

@@ -25,12 +25,22 @@ DomElement.prototype.createElement = function() {
     font-size: ${this.fontSize};
   `;
 
+
+
+  document.body.append(element);
+
+};
+
+DomElement.prototype.eventListeners = function() {
+  let element = document.querySelector(`${this.selector}`);
   element.addEventListener('click', function(e) {
     if (!document.querySelector('.input')) {
       let input = document.createElement('input');
+      input.placeholder = "press 'Enter' to save";
       input.addEventListener('keypress', function(e) {
         if (e.key === 'Enter') {
           element.innerText = input.value;
+          input.value = '';
         }
       });
       input.className = 'input';
@@ -39,17 +49,10 @@ DomElement.prototype.createElement = function() {
       document.querySelector('.input').remove();
     }
   });
-
-
-  document.body.append(element);
-
 };
-
-DomElement.prototype.text = function() {
-
-};
-
 
 let elem1 = new DomElement('.square', 200, 200, 'lightblue', 16);
 elem1.createElement();
+elem1.eventListeners();
+
 

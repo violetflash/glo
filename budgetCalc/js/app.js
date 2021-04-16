@@ -62,7 +62,7 @@ let appData = {
 
   start() {
     this.budget = +salaryAmount.value;
-
+    console.log(this);
     this.getExpenses();
     this.getAddIncome();
     this.getExpensesMonth();
@@ -242,20 +242,20 @@ salaryAmount.addEventListener('input', function() {
 
 
 start.addEventListener('click', function() {
-  appData.start.bind(appData);
+  appData.start.call(appData);
   start.style.display = 'none';
   cancel.style.display = 'inline-block';
-  document.querySelectorAll('input[type="text"]').forEach(elem => elem.setAttribute('disabled', 'true'));
-  appData.start();
+  [expensesPlus, incomePlus, ...document.querySelectorAll('input[type="text"]')].forEach(function(elem) {
+    elem.setAttribute('disabled', 'true');
+  });
 });
 
 
 cancel.addEventListener('click', function() {
-  appData.reset.bind(appData);
+  appData.reset.call(appData);
   cancel.style.display = 'none';
   start.style.display = 'inline-block';
   start.setAttribute('disabled', 'true');
-  appData.reset();
 });
 
 

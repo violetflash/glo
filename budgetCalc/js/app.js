@@ -62,7 +62,6 @@ let appData = {
 
   start() {
     this.budget = +salaryAmount.value;
-    console.log(this);
     this.getExpenses();
     this.getAddIncome();
     this.getExpensesMonth();
@@ -84,10 +83,13 @@ let appData = {
     this.addIncome = [];
     this.addExpenses = [];
 
-    document.querySelectorAll('input[type="text"]').forEach(function(elem) {
-      elem.value = '';
+    [periodSelect, expensesPlus, incomePlus, ...document.querySelectorAll('input[type="text"]')].forEach(function(elem) {
+      if (elem.type === "text") {
+        elem.value = '';
+      }
       elem.removeAttribute('disabled');
     });
+
 
     [incomeItems, expensesItems].forEach(function(list) {
       list.forEach(function(elem, index) {
@@ -245,7 +247,7 @@ start.addEventListener('click', function() {
   appData.start.call(appData);
   start.style.display = 'none';
   cancel.style.display = 'inline-block';
-  [expensesPlus, incomePlus, ...document.querySelectorAll('input[type="text"]')].forEach(function(elem) {
+  [periodSelect, expensesPlus, incomePlus, ...document.querySelectorAll('input[type="text"]')].forEach(function(elem) {
     elem.setAttribute('disabled', 'true');
   });
 });

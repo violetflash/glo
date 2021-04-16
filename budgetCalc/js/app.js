@@ -140,6 +140,17 @@ AppData.prototype.showResult = function() {
   });
 };
 
+/*
+AppData.prototype.validateInputs = function() {
+  incomeItems = document.getElementsByClassName('.income-items');
+  expensesItems = document.getElementsByClassName('.expenses-items');
+  Array.prototype.slice.call(incomeItems).forEach(function(elem) {
+    
+  });
+};
+
+ */
+
 AppData.prototype.initialize = function() {
   start.setAttribute('disabled', 'true');
 
@@ -159,8 +170,7 @@ AppData.prototype.addExpensesBlock = function() {
   let cloneExpensesItem = expensesItems[0].cloneNode(true);
   let cloneInputs = cloneExpensesItem.querySelectorAll('input');
   cloneInputs.forEach(function(elem) {
-    elem.value = '';
-    elem.value = '';
+    elem.value = '';      //TODO ПОВТОРЯЮЩИЙСЯ КОД
     if (elem.placeholder === 'Наименование') {
       elem.addEventListener('input', function(e) {
         elem.value = elem.value.replace(/[^а-яА-Я\s,.]/g, '');

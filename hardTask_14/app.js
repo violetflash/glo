@@ -26,6 +26,8 @@ DomElement.prototype.createElement = function() {
     background: ${this.bg};
     font-size: ${this.fontSize};
     position: ${this.position};
+    display: flex; justify-content: center; align-items: center;
+    color: red;
   `;
   document.body.append(element);
 };

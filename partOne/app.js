@@ -18,17 +18,14 @@ DomElement.prototype.createElement = function() {
     element = document.createElement('p');
     element.id = `${this.selector.slice(1)}`;
   }
+  element.innerText = 'CLICK to update this text';
   element.style.cssText = `
     height: ${this.height}px;
     width: ${this.width}px;
     background: ${this.bg};
     font-size: ${this.fontSize};
   `;
-
-
-
   document.body.append(element);
-
 };
 
 DomElement.prototype.eventListeners = function() {
@@ -45,6 +42,7 @@ DomElement.prototype.eventListeners = function() {
       });
       input.className = 'input';
       element.after(input);
+      input.focus();
     } else {
       document.querySelector('.input').remove();
     }

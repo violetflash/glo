@@ -24,7 +24,7 @@ const authorizer = {
 
     if (!pattern.test(result.trim())) {
       alert(errorMessage);
-      authorizer.getUserInfo(target, pattern, message, errorMessage);
+      this.getUserInfo(target, pattern, message, errorMessage);
     } else {
       this[target] = result.trim();
     }
@@ -40,21 +40,21 @@ const authorizer = {
     const pattern = /^[a-zA-Zа-яА-я]{2,} [a-zA-Zа-яА-я]{2,}$/g;
     const message = 'Введите Ваше Имя и Фамилию через пробел:';
     const errorMessage = 'Ошибка! Введите Ваше Имя и Фамилию через пробел';
-    authorizer.getUserInfo('fullName', pattern, message, errorMessage);
+    this.getUserInfo('fullName', pattern, message, errorMessage);
   },
 
   getLogin() {
     const pattern = /^[\w-]+$/g;
     const message = 'Введите Ваш Логин:';
     const errorMessage = 'Ошибка! Введите Ваш логин Латиницей без пробелов!';
-    authorizer.getUserInfo('login', pattern, message, errorMessage);
+    this.getUserInfo('login', pattern, message, errorMessage);
   },
 
   getPassword() {
     const pattern = /.+/g;
     const message = 'Введите Ваш Пароль:';
     const errorMessage = 'Что-то пошло не так';
-    authorizer.getUserInfo('password', pattern, message, errorMessage);
+    this.getUserInfo('password', pattern, message, errorMessage);
   },
 
   getTime() {

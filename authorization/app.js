@@ -23,9 +23,7 @@ const authorizer = {
       alert(errorMessage);
       authorizer.getUserInfo(target, pattern, message, errorMessage);
     } else {
-      this.test = result;
-      console.log(target);
-      this[`${target}`] = result.trim();
+      this[target] = result.trim();
     }
   },
 
@@ -140,7 +138,6 @@ const authorizer = {
       };
       this.accounts.push(account);
       localStorage.setItem('accounts', JSON.stringify(this.accounts));
-      this.resetUserInfo();
       this.render();
     }
   },
@@ -168,19 +165,20 @@ const authorizer = {
   },
 
   checkLogin() {
-    const self = this;
-    self.accounts.forEach(function(account) {
-      return self.login === account.name;
-    });
+    for (const key in this.accounts) {
+      if (this.login === this.accounts[key].login) {
+        return true;
+      }
+      console.log(this.accounts[key]);
+    }
   },
 
   checkPassword() {
-    const self = this;
-    self.accounts.forEach(function(account) {
-      if (self.password === account.password) {
+    for (const key in this.accounts) {
+      if (this.password === this.accounts[key].password) {
         return true;
       }
-    });
+    }
   },
 
   authorization() {
@@ -189,14 +187,16 @@ const authorizer = {
     if (this.checkLogin()) { // если такой логин существует
       this.getPassword(); // запрашиваем пароль
       if (this.checkPassword()) { //если подходит, то приветствуем
-        this.accounts.forEach(function(account) {
-          if (this.login === account.login) {
-            this.titleName.innerText = account.firstName;
+        for (const key in this.accounts) {
+          if (this.login === this.accounts[key].login) {
+            this.titleName.innerText = this.accounts[key].firstName;
           }
-        });
+        }
+      } else {
+        return alert('Неверный пароль');
       }
     } else {
-      this.resetUserInfo();
+      // this.resetUserInfo();
       alert('Такой пользователь не зарегистрирован!');
     }
   },
@@ -204,6 +204,7 @@ const authorizer = {
   initialize() {
     this.registerBtn.addEventListener('click', function(e) {
       this.setAccount();
+      this.resetUserInfo();
       console.log(this.accounts);
     }.bind(authorizer));
     this.loginBtn.addEventListener('click', function(e) {

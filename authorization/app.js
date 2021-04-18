@@ -7,7 +7,10 @@ const authorizer = {
   list: document.querySelector('#list'),
   accounts: localStorage.getItem('accounts') ?
     JSON.parse(localStorage.getItem('accounts')) :
-    [],
+    [
+      {currentUser:''},
+      {users: []},
+    ],
   fullName: '',
   login: '',
   password: '',
@@ -31,6 +34,7 @@ const authorizer = {
     this.fullName = '';
     this.login = '';
     this.password = '';
+    this.user = '';
   },
 
   getName() {
@@ -162,6 +166,7 @@ const authorizer = {
       li.append(delBtn);
       self.list.append(li);
     });
+    this.titleName.innerText = self.user ? self.user : 'Аноним';
   },
 
   checkLogin() {
@@ -181,23 +186,30 @@ const authorizer = {
     }
   },
 
-  authorization() {
-    this.getLogin(); //запрашиваем логин и записываем в объект
+  authorization() { //TODO этой жути требуется рефакторинг
+    this.getLogin(); //запрашиваем логин и записываем его в объект для проверки
     console.log(this);
-    if (this.checkLogin()) { // если такой логин существует
-      this.getPassword(); // запрашиваем пароль
-      if (this.checkPassword()) { //если подходит, то приветствуем
-        for (const key in this.accounts) {
-          if (this.login === this.accounts[key].login) {
-            this.titleName.innerText = this.accounts[key].firstName;
+    if (this.login) { // если при вводе логина не нажата ОТМЕНА
+      if (this.checkLogin()) { // если такой логин существует в базе
+        this.getPassword(); // запрашиваем пароль
+        if (this.password) {
+          if (this.checkPassword()) { //если подходит, то приветствуем
+            for (const key in this.accounts) {
+              if (this.login === this.accounts[key].login) {
+                this.user = this.accounts[key].firstName;
+                this.render();
+                // this.titleName.innerText = this.accounts[key].firstName;
+              }
+            }
+          } else {
+            this.resetUserInfo();
+            return alert('Неверный пароль');
           }
         }
       } else {
-        return alert('Неверный пароль');
+        this.resetUserInfo(); //если логин не существует, удаляем
+        return alert('Такой пользователь не зарегистрирован!');
       }
-    } else {
-      // this.resetUserInfo();
-      alert('Такой пользователь не зарегистрирован!');
     }
   },
 
@@ -209,6 +221,9 @@ const authorizer = {
     }.bind(authorizer));
     this.loginBtn.addEventListener('click', function(e) {
       this.authorization();
+      // this.resetUserInfo();
+      console.log(this.accounts);
+      console.log(this);
     }.bind(authorizer));
     this.render();
   },

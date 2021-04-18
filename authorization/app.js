@@ -7,10 +7,10 @@ const authorizer = {
   list: document.querySelector('#list'),
   accounts: localStorage.getItem('accounts') ?
     JSON.parse(localStorage.getItem('accounts')) :
-    [
-      {currentUser:''},
-      {users: []},
-    ],
+    {
+      currentUser:'',
+      users: [],
+    },
   fullName: '',
   login: '',
   password: '',
@@ -34,7 +34,6 @@ const authorizer = {
     this.fullName = '';
     this.login = '';
     this.password = '';
-    this.user = '';
   },
 
   getName() {
@@ -49,7 +48,6 @@ const authorizer = {
     const message = 'Введите Ваш Логин:';
     const errorMessage = 'Ошибка! Введите Ваш логин Латиницей без пробелов!';
     authorizer.getUserInfo('login', pattern, message, errorMessage);
-    console.log(this);
   },
 
   getPassword() {
@@ -57,7 +55,6 @@ const authorizer = {
     const message = 'Введите Ваш Пароль:';
     const errorMessage = 'Что-то пошло не так';
     authorizer.getUserInfo('password', pattern, message, errorMessage);
-    console.log(this);
   },
 
   getTime() {
@@ -127,29 +124,32 @@ const authorizer = {
   },
 
   setAccount() {
-    this.getName();
-    if (this.fullName) {
-      this.getLogin();
+    this.getName(); //запрашиваем имя, записываем в объект
+    if (this.fullName) { //если не была нажата отмена и имя записано
+      this.getLogin(); // то запрашиваем логин и записываем в объект
     }
-    if (this.login) {
-      this.getPassword();
-      const account = {
-        firstName: this.fullName.split(' ')[0][0].toUpperCase() + this.fullName.split(' ')[0].slice(1),
-        lastName: this.fullName.split(' ')[1][0].toUpperCase() + this.fullName.split(' ')[1].slice(1),
-        login: this.login,
-        password: this.password,
-        time: this.getTime(),
-      };
-      this.accounts.push(account);
-      localStorage.setItem('accounts', JSON.stringify(this.accounts));
-      this.render();
+    if (this.login) { // если не была нажата отмена и логин был записан
+      this.getPassword(); //спрашиваем пароль и записываем в объект
+      if (this.password) { //если не была нажата отмена и пароль был записан в объект
+        const account = {
+          firstName: this.fullName.split(' ')[0][0].toUpperCase() + this.fullName.split(' ')[0].slice(1),
+          lastName: this.fullName.split(' ')[1][0].toUpperCase() + this.fullName.split(' ')[1].slice(1),
+          login: this.login,
+          password: this.password,
+          time: this.getTime(),
+        };
+        this.accounts.users.push(account);
+        localStorage.setItem('accounts', JSON.stringify(this.accounts));
+        this.render();
+      }
     }
   },
 
   render() {
+    this.titleName.innerText = this.accounts.currentUser ? this.accounts.currentUser : 'Аноним';
     const self = this;
     this.list.innerHTML = '';
-    this.accounts.forEach(function (account, index) {
+    this.accounts.users.forEach(function (account, index) {
       const li = document.createElement('li');
       li.className = 'row';
       li.style.cssText = 'width: 100%; padding: 10px 0; border-bottom: 1px solid #ccc;';
@@ -159,28 +159,30 @@ const authorizer = {
       delBtn.style.cssText = 'margin: 0 0 0 15px';
       delBtn.innerText = 'Удалить';
       delBtn.addEventListener('click', function(){
-        self.accounts.splice(index, 1);
+        if (self.accounts.currentUser === account.firstName) {
+          self.accounts.currentUser = '';
+        }
+        self.accounts.users.splice(index, 1);
         localStorage.setItem('accounts', JSON.stringify(self.accounts));
         self.render();
       });
       li.append(delBtn);
       self.list.append(li);
     });
-    this.titleName.innerText = self.user ? self.user : 'Аноним';
+    this.resetUserInfo();
   },
 
   checkLogin() {
-    for (const key in this.accounts) {
-      if (this.login === this.accounts[key].login) {
+    for (const key in this.accounts.users) {
+      if (this.login === this.accounts.users[key].login) {
         return true;
       }
-      console.log(this.accounts[key]);
     }
   },
 
   checkPassword() {
-    for (const key in this.accounts) {
-      if (this.password === this.accounts[key].password) {
+    for (const key in this.accounts.users) {
+      if (this.password === this.accounts.users[key].password) {
         return true;
       }
     }
@@ -188,15 +190,15 @@ const authorizer = {
 
   authorization() { //TODO этой жути требуется рефакторинг
     this.getLogin(); //запрашиваем логин и записываем его в объект для проверки
-    console.log(this);
     if (this.login) { // если при вводе логина не нажата ОТМЕНА
       if (this.checkLogin()) { // если такой логин существует в базе
         this.getPassword(); // запрашиваем пароль
         if (this.password) {
           if (this.checkPassword()) { //если подходит, то приветствуем
-            for (const key in this.accounts) {
-              if (this.login === this.accounts[key].login) {
-                this.user = this.accounts[key].firstName;
+            for (const key in this.accounts.users) {
+              if (this.login === this.accounts.users[key].login) {
+                this.accounts.currentUser = this.accounts.users[key].firstName;
+                localStorage.setItem('accounts', JSON.stringify(this.accounts));
                 this.render();
                 // this.titleName.innerText = this.accounts[key].firstName;
               }
@@ -214,18 +216,14 @@ const authorizer = {
   },
 
   initialize() {
+    this.render();
     this.registerBtn.addEventListener('click', function(e) {
       this.setAccount();
-      this.resetUserInfo();
-      console.log(this.accounts);
     }.bind(authorizer));
     this.loginBtn.addEventListener('click', function(e) {
       this.authorization();
-      // this.resetUserInfo();
-      console.log(this.accounts);
-      console.log(this);
     }.bind(authorizer));
-    this.render();
+
   },
 };
 

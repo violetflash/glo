@@ -182,7 +182,7 @@ const authorizer = {
 
   checkPassword() {
     for (const key in this.accounts.users) {
-      if (this.password === this.accounts.users[key].password) {
+      if (this.login === this.accounts.users[key].login && this.password === this.accounts.users[key].password) {
         return true;
       }
     }

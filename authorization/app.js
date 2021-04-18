@@ -151,7 +151,6 @@ const authorizer = {
       li.style.cssText = 'width: 100%; padding: 10px 0; border-bottom: 1px solid #ccc;';
       li.innerHTML = `${index + 1}) ${account.firstName} ${account.lastName}, ${account.time}`;
       const delBtn = document.createElement('button');
-      delBtn.className = 'delete';
       delBtn.style.cssText = 'margin: 0 0 0 15px';
       delBtn.innerText = 'Удалить';
       delBtn.addEventListener('click', function(){
@@ -184,7 +183,7 @@ const authorizer = {
     }
   },
 
-  authorization() { //TODO этой жути требуется рефакторинг
+  authorization() { //TODO этой жути требуется рефакторинг, если он возможен в данной концепции
     this.getLogin(); //запрашиваем логин и записываем его в объект для проверки
     if (this.login) { // если при вводе логина не нажата ОТМЕНА
       if (this.checkLogin()) { // если такой логин существует в базе

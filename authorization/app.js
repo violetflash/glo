@@ -11,10 +11,6 @@ const authorizer = {
       currentUser:'',
       users: [],
     },
-  fullName: '',
-  login: '',
-  password: '',
-
 
   getUserInfo(target, pattern, message, errorMessage) {
     let result = prompt(message);
@@ -217,13 +213,8 @@ const authorizer = {
 
   initialize() {
     this.render();
-    this.registerBtn.addEventListener('click', function(e) {
-      this.setAccount();
-    }.bind(authorizer));
-    this.loginBtn.addEventListener('click', function(e) {
-      this.authorization();
-    }.bind(authorizer));
-
+    this.registerBtn.addEventListener('click', function() {this.setAccount();}.bind(authorizer));
+    this.loginBtn.addEventListener('click', function() {this.authorization();}.bind(authorizer));
   },
 };
 

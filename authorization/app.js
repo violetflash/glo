@@ -4,7 +4,7 @@ const authorizer = {
   titleName: document.querySelector('#username'),
   registerBtn: document.querySelector('#registerUser'),
   loginBtn: document.querySelector('#login'),
-  list: document.querySelector('.list'),
+  list: document.querySelector('#list'),
   accounts: localStorage.getItem('accounts') ?
     JSON.parse(localStorage.getItem('accounts')) :
     [],
@@ -23,6 +23,7 @@ const authorizer = {
       alert(errorMessage);
       authorizer.getUserInfo(target, pattern, message, errorMessage);
     } else {
+      this.test = result;
       this[target] = result.trim();
     }
   },
@@ -45,6 +46,7 @@ const authorizer = {
     const message = 'Введите Ваш Логин:';
     const errorMessage = 'Ошибка! Введите Ваш логин Латиницей без пробелов!';
     authorizer.getUserInfo('login', pattern, message, errorMessage);
+    console.log(this);
   },
 
   getPassword() {
@@ -52,6 +54,7 @@ const authorizer = {
     const message = 'Введите Ваш Пароль:';
     const errorMessage = 'Что-то пошло не так';
     authorizer.getUserInfo('password', pattern, message, errorMessage);
+    console.log(this);
   },
 
   getTime() {
@@ -129,22 +132,81 @@ const authorizer = {
       this.getPassword();
       const account = {
         firstName: this.fullName.split(' ')[0][0].toUpperCase() + this.fullName.split(' ')[0].slice(1),
-        lastName: this.fullName.split(' ')[1][0].toUpperCase() + this.fullName.split(' ')[0].slice(1),
+        lastName: this.fullName.split(' ')[1][0].toUpperCase() + this.fullName.split(' ')[1].slice(1),
         login: this.login,
+        password: this.password,
         time: this.getTime(),
       };
       this.accounts.push(account);
       localStorage.setItem('accounts', JSON.stringify(this.accounts));
       this.resetUserInfo();
+      this.render();
+    }
+  },
+
+  render() {
+    const self = this;
+    this.list.innerHTML = '';
+    this.accounts.forEach(function (account, index) {
+      const li = document.createElement('li');
+      li.className = 'row';
+      li.style.cssText = 'display: inline-block; padding: 10px 0; border-bottom: 1px solid #ccc;';
+      li.innerHTML = `${index + 1}) ${account.firstName} ${account.lastName}, ${account.time}`;
+      const delBtn = document.createElement('button');
+      delBtn.className = 'delete';
+      delBtn.style.cssText = 'margin: 0 0 0 15px';
+      delBtn.innerText = 'Удалить';
+      delBtn.addEventListener('click', function(){
+        self.accounts.splice(index, 1);
+        localStorage.setItem('accounts', JSON.stringify(self.accounts));
+        self.render();
+      });
+      li.append(delBtn);
+      self.list.append(li);
+    });
+  },
+
+  checkLogin() {
+    const self = this;
+    self.accounts.forEach(function(account) {
+      return self.login === account.name;
+    });
+  },
+
+  checkPassword() {
+    const self = this;
+    self.accounts.forEach(function(account) {
+      return self.password === account.password;
+    });
+  },
+
+  authorization() {
+    this.getLogin(); //запрашиваем логин и записываем в объект
+    console.log(this);
+    if (this.checkLogin()) { // если такой логин существует
+      this.getPassword(); // запрашиваем пароль
+      if (this.checkPassword()) { //если подходит, то приветствуем
+        this.accounts.forEach(function(account) {
+          if (this.login === account.login) {
+            this.titleName.innerText = account.firstName;
+          }
+        });
+      }
+    } else {
+      this.resetUserInfo();
+      alert('Такой пользователь не зарегистрирован!');
     }
   },
 
   initialize() {
-    console.log(this.accounts);
     this.registerBtn.addEventListener('click', function(e) {
       this.setAccount();
       console.log(this.accounts);
     }.bind(authorizer));
+    this.loginBtn.addEventListener('click', function(e) {
+      this.authorization();
+    }.bind(authorizer));
+    this.render();
   },
 };
 

@@ -24,7 +24,8 @@ const authorizer = {
       authorizer.getUserInfo(target, pattern, message, errorMessage);
     } else {
       this.test = result;
-      this[target] = result.trim();
+      console.log(target);
+      this[`${target}`] = result.trim();
     }
   },
 
@@ -150,7 +151,7 @@ const authorizer = {
     this.accounts.forEach(function (account, index) {
       const li = document.createElement('li');
       li.className = 'row';
-      li.style.cssText = 'display: inline-block; padding: 10px 0; border-bottom: 1px solid #ccc;';
+      li.style.cssText = 'width: 100%; padding: 10px 0; border-bottom: 1px solid #ccc;';
       li.innerHTML = `${index + 1}) ${account.firstName} ${account.lastName}, ${account.time}`;
       const delBtn = document.createElement('button');
       delBtn.className = 'delete';
@@ -176,7 +177,9 @@ const authorizer = {
   checkPassword() {
     const self = this;
     self.accounts.forEach(function(account) {
-      return self.password === account.password;
+      if (self.password === account.password) {
+        return true;
+      }
     });
   },
 

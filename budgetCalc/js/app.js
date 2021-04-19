@@ -13,6 +13,8 @@ const checkDeposit = document.querySelector('#deposit-check');
 
 //Поля для ввода возможных доходов (additional_income-item) при помощи querySelectorAll
 const addIncomeItems = document.querySelectorAll('.additional_income-item');
+const addIncomeDiv = document.querySelectorAll('.additional_income');
+const addExpensesDiv = document.querySelectorAll('.additional_expenses');
 
 //Каждый элемент в правой части программы через класс(не через querySelector), которые имеют в имени класса "-value",
 // начиная с class="budget_day-value" и заканчивая class="target_month-value">
@@ -62,12 +64,9 @@ class AppData {
 
   start() {
     this.budget = +salaryAmount.value;
-    // this.getExpenses();
-    // this.getIncome();
     this.getExpInc();
-    this.getAddIncome();
+    this.getAddExpInc();
     this.getExpensesMonth();
-    this.getAddExpenses();
     this.getBudget();
     this.getInfoDeposit();
     this.showResult();
@@ -197,64 +196,47 @@ class AppData {
     }
   }
 
-  getExpenses() {
-    const self = this;
-    expensesItems.forEach(function(item) {
-      const itemExpenses = item.querySelector('.expenses-title').value;
-      const cashExpenses = item.querySelector('.expenses-amount').value;
-      if (itemExpenses !== '' && cashExpenses !== '') {
-        self.expenses[itemExpenses] = +cashExpenses;
-      }
-    });
-  }
-
-  getIncome() {
-    const self = this;
-    incomeItems.forEach(function(item) {
-      const itemIncome = item.querySelector('.income-title').value;
-      const cashIncome = item.querySelector('.income-amount').value;
-      if (itemIncome !== '' && cashIncome !== '') {
-        self.income[itemIncome] = +cashIncome;
-      }
-    });
-    for (const key in this.income) {
-      self.incomeMonth += +self.income[key];
-    }
-  }
-
   getExpInc() {
-    const self = this;
+    // const self = this;
     const count = item => {
       const startStr = item.className.split('-')[0];
       const itemTitle = item.querySelector(`.${startStr}-title`).value;
       const itemAmount = item.querySelector(`.${startStr}-amount`).value;
       if (itemTitle !== '' && itemAmount !== '') {
-        self[startStr][itemTitle] = +itemAmount;
+        this[startStr][itemTitle] = +itemAmount;
       }
     };
 
     incomeItems.forEach(count);
     expensesItems.forEach(count);
+
+    for (const key in this.income) {
+      this.incomeMonth += +this.income[key];
+    }
   }
 
-  getAddExpenses() {
-    const additionalExpenses = additionalExpensesItem.value.split(',');
-    const self = this;
-    additionalExpenses.forEach(function(item) {
-      item = item.trim();
-      if (item !== '') {
-        self.addExpenses.push(item[0].toUpperCase() + item.slice(1));
-      }
-    });
-  }
+  getAddExpInc(){
+    // const additionalExpenses = additionalExpensesItem.value.split(',');
 
-  getAddIncome() {
-    addIncomeItems.forEach(function(item) {
-      const itemValue = item.value.trim();
-      if (itemValue !== '') {
-        this.addIncome.push(itemValue[0].toUpperCase() + itemValue.slice(1));
-      }
-    }.bind(appData));
+    const count = (elem) => {
+      const selector = elem.className.split('-')[0];
+      //На основе класса общих блоков получаем название нужного массива объекта
+      const array = 'add' + selector.split('_')[1][0].toUpperCase() + selector.split('_')[1].slice(1);
+      const rows = elem.querySelectorAll(`.${selector}-item`); //находим все инпуты внутри
+      rows.forEach((item) => {
+        let value = item.value;  //получаем значения инпутов
+        if (value !== '') {
+          value = value.split(','); //уходим в массив, т.к. поле расходов - через запятую
+          value.forEach(item => {
+            item = item.trim();
+            this[array].push(item[0].toUpperCase() + item.slice(1));
+          });
+        }
+      });
+    };
+
+    addIncomeDiv.forEach(count);
+    addExpensesDiv.forEach(count);
   }
 
   getExpensesMonth() {

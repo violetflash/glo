@@ -127,9 +127,10 @@ const authorizer = {
     if (this.login) { // если не была нажата отмена и логин был записан
       this.getPassword(); //спрашиваем пароль и записываем в объект
       if (this.password) { //если не была нажата отмена и пароль был записан в объект
+        const fullName = this.fullName.toLowerCase().split(' ');
         const account = {
-          firstName: this.fullName.split(' ')[0][0].toUpperCase() + this.fullName.split(' ')[0].slice(1),
-          lastName: this.fullName.split(' ')[1][0].toUpperCase() + this.fullName.split(' ')[1].slice(1),
+          firstName: fullName[0][0].toUpperCase() + fullName[0].slice(1),
+          lastName: fullName[1][0].toUpperCase() + fullName[1].slice(1),
           login: this.login,
           password: this.password,
           time: this.getTime(),

@@ -62,11 +62,12 @@ class AppData {
 
   start() {
     this.budget = +salaryAmount.value;
-    this.getExpenses();
+    // this.getExpenses();
+    // this.getIncome();
+    this.getExpInc();
     this.getAddIncome();
     this.getExpensesMonth();
     this.getAddExpenses();
-    this.getIncome();
     this.getBudget();
     this.getInfoDeposit();
     this.showResult();
@@ -172,17 +173,6 @@ class AppData {
     }
   }
 
-  getExpenses() {
-    const self = this;
-    expensesItems.forEach(function(item) {
-      const itemExpenses = item.querySelector('.expenses-title').value;
-      const cashExpenses = item.querySelector('.expenses-amount').value;
-      if (itemExpenses !== '' && cashExpenses !== '') {
-        self.expenses[itemExpenses] = +cashExpenses;
-      }
-    });
-  }
-
   addIncomeBlock() {
     const cloneAddIncomeItem = incomeItems[0].cloneNode(true);
     const cloneInputs = cloneAddIncomeItem.querySelectorAll('input');
@@ -207,6 +197,17 @@ class AppData {
     }
   }
 
+  getExpenses() {
+    const self = this;
+    expensesItems.forEach(function(item) {
+      const itemExpenses = item.querySelector('.expenses-title').value;
+      const cashExpenses = item.querySelector('.expenses-amount').value;
+      if (itemExpenses !== '' && cashExpenses !== '') {
+        self.expenses[itemExpenses] = +cashExpenses;
+      }
+    });
+  }
+
   getIncome() {
     const self = this;
     incomeItems.forEach(function(item) {
@@ -219,6 +220,21 @@ class AppData {
     for (const key in this.income) {
       self.incomeMonth += +self.income[key];
     }
+  }
+
+  getExpInc() {
+    const self = this;
+    const count = item => {
+      const startStr = item.className.split('-')[0];
+      const itemTitle = item.querySelector(`.${startStr}-title`).value;
+      const itemAmount = item.querySelector(`.${startStr}-amount`).value;
+      if (itemTitle !== '' && itemAmount !== '') {
+        self[startStr][itemTitle] = +itemAmount;
+      }
+    };
+
+    incomeItems.forEach(count);
+    expensesItems.forEach(count);
   }
 
   getAddExpenses() {

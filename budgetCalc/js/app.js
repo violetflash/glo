@@ -146,6 +146,7 @@ class AppData {
         elem.value = elem.value.replace(/[^\d]/g, '');
       });
     });
+    this.eventsListeners();
   }
 
   addExpIncBlock() {
@@ -278,4 +279,3 @@ class AppData {
 const appData = new AppData();
 
 appData.initialize();
-appData.eventsListeners();

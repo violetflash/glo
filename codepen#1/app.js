@@ -33,7 +33,6 @@ function lessonCutter(arr) {
       i--;
     }
   }
-
 }
 
 console.log(myLesson);

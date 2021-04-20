@@ -1,0 +1,1 @@
+document.cookie = "username=Саша;expires=15/02/2011 00:00:00";

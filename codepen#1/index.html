@@ -7,8 +7,28 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Homework 16 - codepen #1</title>
 </head>
+<style>
+  input{
+    display: block;
+    margin: 10px 0;
+  }
+</style>
 <body>
-
+  <input type="text" id='a'>
+  <input type="text" id='b'>
+  <button id="sum">сумма</button>
+  <button id="mult">произведение</button>
+  <input type="text" id='res'>
+  <div class="task">
+    Решить задачу где возможно используй <b>this</b><br>
+    В объект можно добавлять свои свойства<br>
+    Есть объект calculator с тремя методами:
+    <ul>
+      <li>sum() возвращает сумму этих двух значений</li>
+      <li>mult() возвращает произведение этих двух значений</li>
+      <li>show() выводит результат вычислений в инпут ".res" объекта</li>
+    </ul>
+  </div>
   <script src="app.js"></script>
 </body>
 </html>

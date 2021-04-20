@@ -1,40 +1,33 @@
 'use strict';
 
-/* Напишите функцию на JS. Цель: Убрать все объекты с типом additional, а для basic очки уменьшить в двое.
+const calculator = {
+  a: document.querySelector('#a'),
+  b: document.querySelector('#b'),
+  sumBtn: document.querySelector('#sum'),
+  multBtn: document.querySelector('#mult'),
+  res: document.querySelector('#res'),
 
-Изменить необходимо исходный массив*/
+  sum: function(){
+    const {a, b} = this;
+    this.show(Number(a.value) + Number(b.value));
+  },
+  mult: function(){
+    const {a, b} = this;
+    this.show(a.value * b.value);
+  },
+  show: function(result){
+    this.res.value = result;
+  },
 
-const myLesson = [
-  {lesson: 1, type: 'basic', points: 2},
-  {lesson: 2, type: 'additional', points: 4},
-  {lesson: 3, type: 'basic', points: 6},
-  {lesson: 4, type: 'additional', points: 3},
-  {lesson: 5, type: 'basic', points: 4},
-  {lesson: 6, type: 'basic', points: 2},
-  {lesson: 7, type: 'additional', points: 2},
-  {lesson: 8, type: 'basic', points: 6},
-  {lesson: 9, type: 'basic', points: 4},
-  {lesson: 10, type: 'basic', points: 6},
-  {lesson: 11, type: 'additional', points: 5},
-  {lesson: 12, type: 'basic', points: 2},
-  {lesson: 13, type: 'additional', points: 2},
-  {lesson: 14, type: 'basic', points: 4},
-  {lesson: 15, type: 'additional', points: 1},
-  {lesson: 16, type: 'additional', points: 7},
-];
-
-
-function lessonCutter(arr) {
-  for (let i = 0; i < arr.length; i++) {
-    if (arr[i].type === 'basic') {
-      arr[i].points /= 2;
-    } else if (arr[i].type === 'additional') {
-      arr.splice(i, 1);
-      i--;
-    }
+  initialize() {
+    [this.a, this.b].forEach((input) => {
+      input.addEventListener('input', () => {
+        input.value = input.value.replace(/[^\d]/g, '');
+      });
+    });
+    this.sumBtn.addEventListener('click', this.sum.bind(this));
+    this.multBtn.addEventListener('click', this.mult.bind(this));
   }
-}
+};
 
-console.log(myLesson);
-lessonCutter(myLesson);
-console.log(myLesson);
+calculator.initialize();

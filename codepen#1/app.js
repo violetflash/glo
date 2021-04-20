@@ -25,20 +25,17 @@ const myLesson = [
 
 
 function lessonCutter(arr) {
-  arr.forEach((elem, index) => {
-    for (const key in elem) {
-      if (elem[key] === 'basic') {
-        elem.points /= 2;
-      }
-      if (elem[key] === "additional") {
-        arr.splice(index, 1);
-      }
+  for (let i = 0; i < arr.length; i++) {
+    if (arr[i].type === 'basic') {
+      arr[i].points /= 2;
+    } else if (arr[i].type === 'additional') {
+      arr.splice(i, 1);
+      i--;
     }
-  });
+  }
 
 }
 
 console.log(myLesson);
 lessonCutter(myLesson);
-
 console.log(myLesson);

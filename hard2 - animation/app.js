@@ -49,6 +49,7 @@ const timer = {
     console.log('tick');
     if (this.getTimeRemaining() < 0) {
       this.stopTimer();
+      this.setTimeRemaining(this.startValue);
     }
     this.setTimeRemaining( (this.getTimeRemaining() - 0.02).toFixed(2) );
   },

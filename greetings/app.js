@@ -61,6 +61,6 @@ setInterval(function() {
     const today = getDate();
     document.querySelector('#time').innerText = `Текущее время: ${today.time}`;
 }, 1000);
-document.querySelector('#new-year').innerText = `До Нового Года осталось: ${getTimeRemaining('01 jan 2022')}`;
+document.querySelector('#new-year').innerText = `До Нового Года осталось: ${getTimeRemaining('01 jan 2022')} дня`;
 
 

@@ -197,8 +197,6 @@ body {
     background-image: url("../img/check.png");
 }
 
-
-
 .todo-completed {
     position: relative;
     padding: 60px 0 0 0;
@@ -258,4 +256,49 @@ li:focus {
     border: none;
     width: 100%;
     /*height: 100px;*/
+}
+
+.delete {
+    animation: delete 0.4s;
+}
+
+@keyframes delete {
+    0% {
+        opacity: 1;
+        transform: translateX(0);
+    }
+    100% {
+        opacity: 0;
+        transform: translateX(30%);
+    }
+}
+
+.done {
+    animation: done 0.4s;
+}
+
+@keyframes done {
+    0% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(-150%);
+    }
+}
+
+.undone {
+    animation: undone 0.4s;
+}
+
+@keyframes undone {
+    0% {
+        opacity: 1;
+        transform: translateY(-100%);
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(0);
+    }
 }

@@ -36,14 +36,24 @@ const render = function() {
     todoComplete.addEventListener('click', () => {
       item.completed = !item.completed;
       localStorage.setItem('todoData', JSON.stringify(todoData));
-      render();
+      if (li.classList.contains('done')) {
+        li.classList.remove('done');
+        li.classList.add('undone');
+      } else {
+        li.classList.add('done');
+        li.classList.remove('undone');
+      }
+      // li.classList.contains('done') ? li.classList.add('undone') : li.classList.add('done');
+      // render();
+      setTimeout(render, 300);
     });
 
     const todoRemove = li.querySelector('.todo-remove');
     todoRemove.addEventListener('click', () => {
       todoData.splice(index,  1);
       localStorage.setItem('todoData', JSON.stringify(todoData));
-      render();
+      li.classList.add('delete');
+      setTimeout(render, 300);
     });
 
     const todoEdit = li.querySelector('.todo-edit');

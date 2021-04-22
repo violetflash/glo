@@ -146,7 +146,6 @@ window.addEventListener('DOMContentLoaded', () => {
       e.scrollIntoView({behavior: "smooth", block: "start"});
     }
 
-
     [...menuLinks, scrollBtn].forEach((elem) => {
 
       elem.addEventListener('click', function(e) {

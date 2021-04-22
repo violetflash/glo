@@ -65,14 +65,54 @@ window.addEventListener('DOMContentLoaded', () => {
   //popup
   const togglePopup = () => {
     const popup = document.querySelector('.popup'),
+      popupContent = document.querySelector('.popup-content'),
       btnPopup = document.querySelectorAll('.popup-btn'),
       popupClose = document.querySelector('.popup-close');
 
+    let count = 0;
+    let popupInterval;
+
+    if (document.documentElement.clientWidth > 768) {
+      popupContent.style.top = `-${popupContent.offsetHeight}px`;
+    }
+
+    const popupArrival = () => {
+      count++;
+      popupInterval = requestAnimationFrame(popupArrival);
+      popup.style.display = 'block';
+      if (popupContent.offsetTop < 90) {
+        popupContent.style.top = -popupContent.offsetHeight + count * 20  + 'px';
+      } else {
+        cancelAnimationFrame(popupInterval);
+      }
+    };
+
+
+
+
+
+
+
+    const popupDeparture = () => {
+      // let start = performance.now();
+      popupInterval = requestAnimationFrame(popupDeparture);
+      console.log(popupContent.offsetTop);
+      console.log(-popupContent.offsetHeight);
+      console.log(popupInterval);
+      if (popupContent.offsetTop > -popupContent.offsetHeight) {
+        popupContent.style.top = popupContent.offsetTop - 30  + 'px';
+      } else {
+        cancelAnimationFrame(popupInterval);
+        popup.style.display = 'none';
+
+      }
+    };
+
     btnPopup.forEach(elem => {
-      elem.addEventListener('click', () => popup.style.display = 'block');
+      elem.addEventListener('click', popupArrival);
     });
 
-    popupClose.addEventListener('click', () => popup.style.display = 'none');
+    popupClose.addEventListener('click', popupDeparture);
 
   };
 

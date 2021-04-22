@@ -67,53 +67,72 @@ window.addEventListener('DOMContentLoaded', () => {
     const popup = document.querySelector('.popup'),
       popupContent = document.querySelector('.popup-content'),
       btnPopup = document.querySelectorAll('.popup-btn'),
-      popupClose = document.querySelector('.popup-close');
-
-    let count = 0;
-    let popupInterval;
+      popupClose = document.querySelector('.popup-close'),
+      popupClosePos = popupContent.offsetHeight;
 
     if (document.documentElement.clientWidth > 768) {
-      popupContent.style.top = `-${popupContent.offsetHeight}px`;
+      popupContent.style.top = `-${popupClosePos}px`;
     }
 
-    const popupArrival = () => {
-      count++;
-      popupInterval = requestAnimationFrame(popupArrival);
-      popup.style.display = 'block';
-      if (popupContent.offsetTop < 90) {
-        popupContent.style.top = -popupContent.offsetHeight + count * 20  + 'px';
-      } else {
-        cancelAnimationFrame(popupInterval);
-      }
-    };
+    function animate({timing, draw, duration, func}) {
 
+      let start = performance.now();
 
-
-
-
-
-
-    const popupDeparture = () => {
-      // let start = performance.now();
-      popupInterval = requestAnimationFrame(popupDeparture);
-      console.log(popupContent.offsetTop);
-      console.log(-popupContent.offsetHeight);
-      console.log(popupInterval);
-      if (popupContent.offsetTop > -popupContent.offsetHeight) {
-        popupContent.style.top = popupContent.offsetTop - 30  + 'px';
-      } else {
-        cancelAnimationFrame(popupInterval);
-        popup.style.display = 'none';
-
-      }
-    };
+      requestAnimationFrame(function animate(time) {
+        // timeFraction изменяется от 0 до 1
+        let timeFraction = (time - start) / duration;
+        if (timeFraction > 1) {
+          timeFraction = 1;
+        }
+        // вычисление текущего состояния анимации
+        let progress = timing(timeFraction);
+        draw(progress); // отрисовать её
+        if (timeFraction < 1) {
+          requestAnimationFrame(animate);
+        }
+      });
+    }
 
     btnPopup.forEach(elem => {
-      elem.addEventListener('click', popupArrival);
+      elem.addEventListener('click', () => {
+        animate({
+          duration: 500,
+          timing(timeFraction) {
+            return timeFraction;
+          },
+          draw(progress) {
+            if (document.documentElement.clientWidth > 768) {
+              popup.style.display = 'block';
+              if (popupContent.offsetTop < 90) {
+                popupContent.style.top = -popupClosePos + progress * 1000 + 'px';
+              }
+            } else {
+              popup.style.display = 'block';
+            }
+          }
+        });
+      });
     });
 
-    popupClose.addEventListener('click', popupDeparture);
-
+    popupClose.addEventListener('click', () => {
+      animate({
+        duration: 500,
+        timing(timeFraction) {
+          return timeFraction;
+        },
+        draw(progress) {
+          if (document.documentElement.clientWidth > 768) {
+            if (popupContent.offsetTop > -popupContent.offsetHeight) {
+              popupContent.style.top = popupContent.offsetTop - progress * 100 + 'px';
+            } else {
+              popup.style.display = 'none';
+            }
+          } else {
+            popup.style.display = 'none';
+          }
+        },
+      });
+    });
   };
 
   togglePopup();

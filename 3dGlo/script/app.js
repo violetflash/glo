@@ -84,11 +84,10 @@ window.addEventListener('DOMContentLoaded', () => {
     const popup = document.querySelector('.popup'),
       popupContent = document.querySelector('.popup-content'),
       btnPopup = document.querySelectorAll('.popup-btn'),
-      popupClose = document.querySelector('.popup-close'),
-      popupClosePos = popupContent.offsetHeight;
+      popupClose = document.querySelector('.popup-close');
 
     if (document.documentElement.clientWidth > 768) {
-      popupContent.style.top = `-${popupClosePos}px`;
+      popupContent.style.top = `-${popupContent.offsetHeight}px`;
     }
 
     btnPopup.forEach(elem => {

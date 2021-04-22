@@ -75,9 +75,7 @@ window.addEventListener('DOMContentLoaded', () => {
     }
 
     function animate({timing, draw, duration, func}) {
-
       let start = performance.now();
-
       requestAnimationFrame(function animate(time) {
         // timeFraction изменяется от 0 до 1
         let timeFraction = (time - start) / duration;
@@ -104,7 +102,7 @@ window.addEventListener('DOMContentLoaded', () => {
             if (document.documentElement.clientWidth > 768) {
               popup.style.display = 'block';
               if (popupContent.offsetTop < 90) {
-                popupContent.style.top = -popupClosePos + progress * 1000 + 'px';
+                popupContent.style.top = -popupContent.offsetHeight + progress * 1000 + 'px';
               }
             } else {
               popup.style.display = 'block';

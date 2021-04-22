@@ -62,6 +62,23 @@ window.addEventListener('DOMContentLoaded', () => {
 
   toggleMenu();
 
+  function animate({timing, draw, duration}) {
+    let start = performance.now();
+    requestAnimationFrame(function animate(time) {
+      // timeFraction изменяется от 0 до 1
+      let timeFraction = (time - start) / duration;
+      if (timeFraction > 1) {
+        timeFraction = 1;
+      }
+      // вычисление текущего состояния анимации
+      let progress = timing(timeFraction);
+      draw(progress); // отрисовать её
+      if (timeFraction < 1) {
+        requestAnimationFrame(animate);
+      }
+    });
+  }
+
   //popup
   const togglePopup = () => {
     const popup = document.querySelector('.popup'),
@@ -72,23 +89,6 @@ window.addEventListener('DOMContentLoaded', () => {
 
     if (document.documentElement.clientWidth > 768) {
       popupContent.style.top = `-${popupClosePos}px`;
-    }
-
-    function animate({timing, draw, duration, func}) {
-      let start = performance.now();
-      requestAnimationFrame(function animate(time) {
-        // timeFraction изменяется от 0 до 1
-        let timeFraction = (time - start) / duration;
-        if (timeFraction > 1) {
-          timeFraction = 1;
-        }
-        // вычисление текущего состояния анимации
-        let progress = timing(timeFraction);
-        draw(progress); // отрисовать её
-        if (timeFraction < 1) {
-          requestAnimationFrame(animate);
-        }
-      });
     }
 
     btnPopup.forEach(elem => {
@@ -134,4 +134,48 @@ window.addEventListener('DOMContentLoaded', () => {
   };
 
   togglePopup();
+
+
+  //scroll
+  const scrollDown = () => {
+    const scrollBtn = document.querySelector('a[href="#service-block"]'),
+      menu = document.querySelector('menu'),
+      menuLinks = menu.querySelectorAll('li > a');
+
+    function scroll(e) {
+      e.scrollIntoView({behavior: "smooth", block: "start"});
+    }
+
+
+    [...menuLinks, scrollBtn].forEach((elem) => {
+
+      elem.addEventListener('click', function(e) {
+        e.preventDefault();
+        const element = this.getAttribute('href');
+        const anchor = document.querySelector(`${element}`);
+        scroll(anchor);
+
+        // console.log(this.offsetTop + ' < ' + anchor.offsetTop, window.innerHeight);
+        // window.scrollTo(0, anchor.offsetTop);
+        // const self = this;
+        // animate({
+        //   duration: 500,
+        //   timing(timeFraction) {
+        //     return timeFraction;
+        //   },
+        //   draw(progress) {
+        //     if (window.pageYOffset < anchor.offsetTop ) {
+        //       console.log(self.offsetTop + ' < ' + anchor.offsetTop);
+        //       console.log(progress);
+        //       document.body.scrollTop =  anchor.offsetTop;
+        //     }
+        //     window.scrollTo(0, anchor.offsetTop);
+        //
+        //   },
+        // });
+      });
+    });
+  };
+
+  scrollDown();
 });

@@ -35,6 +35,17 @@ function lessonCutter(arr) {
   }
 }
 
+const lessonCutter2 = (array) => {
+  let count = 0;
+  array.forEach((elem, index, array) => {
+    if (elem.type === 'basic') {
+      array[count] = elem;
+      count++;
+    }
+  });
+  array.length = count;
+};
+
 console.log(myLesson);
-lessonCutter(myLesson);
+lessonCutter2(myLesson);
 console.log(myLesson);

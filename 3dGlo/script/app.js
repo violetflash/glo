@@ -100,6 +100,7 @@ window.addEventListener('DOMContentLoaded', () => {
         }
 
         const popupArrival = () => {
+            document.body.classList.add('overflow-hidden');
             animate({
                 duration: 500,
                 timing(timeFraction) {
@@ -117,6 +118,7 @@ window.addEventListener('DOMContentLoaded', () => {
         };
 
         const popupDeparture = () => {
+            document.body.classList.remove('overflow-hidden');
             animate({
                 duration: 500,
                 timing(timeFraction) {

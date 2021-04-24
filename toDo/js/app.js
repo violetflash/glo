@@ -11,6 +11,7 @@ class TodoList {
             this.todoContainer = controls.todoContainer;
             this.render = this.render.bind(this);
             this.timeoutRender = this.timeoutRender.bind(this);
+            this.counter = 0;
         }
     }
 
@@ -27,13 +28,24 @@ class TodoList {
         setTimeout(this.render, 300);
     }
 
+    // checkLength(counter, value) {
+    //     const {todoData} = this;
+    //     todoData.forEach((elem) => {
+    //         for (const key in elem) {
+    //             if (elem.completed === value) {
+    //                 counter++;
+    //             }
+    //         }
+    //     });
+    //     return counter;
+    // }
+
     render() {
         this.clearLists();
         this.todoData.forEach((item, index) => {
             const li = document.createElement('li');
             li.classList.add('todo-item');
-            li.setAttribute('data-counter', `${index + 1})`);
-            li.setAttribute('data-index', `${index})`);
+            li.setAttribute('data-index', `${index}`);
             li.innerHTML = `
                   <span class="text-todo">${item.value}</span>
                   <div class="todo-buttons">
@@ -42,20 +54,16 @@ class TodoList {
                     <button class="todo-edit"></button>
                   </div>`;
 
+
             if (item.completed) {
                 this.todoCompleted.append(li);
+                const completed = document.querySelectorAll('.todo-completed > li');
+                li.setAttribute('data-counter', completed.length + ')');
             } else {
                 this.todoList.append(li);
+                const todoList = document.querySelectorAll('.todo-list > li');
+                li.setAttribute('data-counter', todoList.length + ')');
             }
-
-            const todoComplete = li.querySelector('.todo-complete');
-            this.completedItem(todoComplete, li, item);
-
-            const todoRemove = li.querySelector('.todo-remove');
-            this.deleteItem(todoRemove, li, index);
-
-            const todoEdit = li.querySelector('.todo-edit');
-            this.editItem(todoEdit, li, item);
         });
     }
 
@@ -63,25 +71,25 @@ class TodoList {
 
     }
 
-    editItem(editButton, li, currentItem) {
-        editButton.addEventListener('click', (e) => {
-            if (li.hasAttribute('contentEditable')) {
-                li.removeAttribute('contentEditable');
-                currentItem.value = li.innerText;
-                localStorage.setItem('todoData', JSON.stringify(this.todoData));
-                this.render();
-            } else {
-                li.setAttribute("contentEditable", true);
-                li.focus();
-                li.addEventListener('keypress', (e) => {
-                    if (e.key === 'Enter') {
-                        currentItem.value = li.innerText;
-                        this.saveDataToLocalStorage();
-                        this.render();
-                    }
-                });
-            }
-        });
+    editItem(target) {
+        const li = target.closest('.todo-item');
+        const index = li.dataset.index;
+        if (li.hasAttribute('contentEditable')) {
+            li.removeAttribute('contentEditable');
+            this.todoData[index].value = li.innerText;
+            this.saveDataToLocalStorage();
+            this.render();
+        } else {
+            li.setAttribute("contentEditable", true);
+            li.focus();
+            li.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    this.todoData[index].value = li.innerText;
+                    this.saveDataToLocalStorage();
+                    this.render();
+                }
+            });
+        }
 
         document.addEventListener('click', e => {
             if (!li.contains(e.target)) {
@@ -90,30 +98,25 @@ class TodoList {
         });
     }
 
-    deleteItem(deleteButton, li, index) {
-        // deleteButton.addEventListener('click', () => {
-        //     this.todoData.splice(index, 1);
-        //     this.saveDataToLocalStorage();
-        //     li.classList.add('delete');
-        //     this.timeoutRender();
-        // });
+    deleteItem(target) {
+        const li = target.closest('.todo-item');
+        const index = li.dataset.index;
+        this.todoData.splice(index, 1);
+        this.saveDataToLocalStorage();
+        li.classList.add('delete');
+        this.timeoutRender();
     }
 
-    completedItem(completeButton, li, currentItem) {
-        completeButton.addEventListener('click', () => {
-            currentItem.completed = !currentItem.completed;
-            this.saveDataToLocalStorage();
-            // if (li.classList.contains('done')) {
-            //   li.classList.remove('done');
-            //   li.classList.add('undone');
-            // } else {
-            //   li.classList.add('done');
-            //   li.classList.remove('undone');
-            // }
-            // li.classList.contains('done') ? li.classList.add('undone') : li.classList.add('done');
-            // render();
-            this.timeoutRender();
-        });
+    completedItem(target) {
+        const li = target.closest('.todo-item');
+        const index = li.dataset.index;
+        this.todoData[index].completed = !this.todoData[index].completed;
+        this.saveDataToLocalStorage();
+        //animation
+        li.classList.add('done');
+
+
+        this.timeoutRender();
     }
 
     eventListeners() {
@@ -127,6 +130,8 @@ class TodoList {
             if (newTodo.value) {
                 newTodo.value = newTodo.value[0].toUpperCase() + newTodo.value.slice(1);
                 this.todoData.push(newTodo);
+            } else {
+                alert('Похоже Вы забыли ввести задачу!');
             }
             this.saveDataToLocalStorage();
             this.input.value = '';
@@ -136,14 +141,23 @@ class TodoList {
         this.todoContainer.addEventListener('click', (e) => {
             let target = e.target;
             if (target.closest('.todo-remove')) {
-                console.log('remove button');
-                //TODO GET ATTR DATA-INDEX
-                this.todoData.splice(index, 1);
-                //     this.saveDataToLocalStorage();
-                //     li.classList.add('delete');
-                //     this.timeoutRender();
+                console.log(target);
+                this.deleteItem(target);
+            } else if (target.closest('.todo-complete')) {
+                console.log(target);
+                // target = target.closest('.todo-complete');
+                this.completedItem(target);
+            } else if (target.closest('.todo-edit')) {
+                this.editItem(target);
             }
         });
+
+        // this.todoContainer.addEventListener('dblclick', (e) => {
+        //     const target = e.target;
+        //     if (target.closest('.todo-item')) {
+        //         this.editItem(target);
+        //     }
+        // });
 
     }
 

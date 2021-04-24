@@ -46,27 +46,28 @@ class AppData {
         this.addIncome = [];
         this.expenses = {};
         this.addExpenses = [];
-        this.deposit = false;
+        this.deposit = new Map(JSON.parse(localStorage.getItem('inputsValues'))).get('deposit') ?? false;
         this.percentDeposit = 0;
         this.moneyDeposit = 0;
         this.budgetDay = 0;
         this.budgetMonth = 0;
         this.expensesMonth = 0;
         this.inputsValues = localStorage.getItem('inputsValues') ?
-            JSON.parse(localStorage.getItem('inputsValues')) :
+            new Map(JSON.parse(localStorage.getItem('inputsValues'))) :
             new Map();
     }
 
     setInputsValues() {
-        // localStorage.setItem('inputsValues', JSON.stringify(this.inputsValues));
         localStorage.setItem(`inputsValues`, JSON.stringify(Array.from(this.inputsValues.entries())));
     }
 
-    getInputValue() {
-
+    getInputsValues() {
+        if (localStorage.getItem('inputsValues')) {
+            textInputs.forEach((elem) => {
+                elem.value = this.inputsValues.get(elem.dataset.name) ?? '';
+            });
+        }
     }
-
-
 
     start() {
         this.budget = +salaryAmount.value;
@@ -95,6 +96,10 @@ class AppData {
         this.expensesMonth = 0;
         this.addIncome = [];
         this.addExpenses = [];
+        this.inputsValues = new Map();
+
+        //удаляем данные из хранилища
+        localStorage.clear('inputsValues');
 
         const textInputs = document.querySelectorAll('input[type="text"]');
         [checkDeposit, depositBank, expensesPlus, incomePlus, ...textInputs].forEach(function(elem) {
@@ -157,9 +162,11 @@ class AppData {
         const cloneItem = items[0].cloneNode(true);
         cloneItem.setAttribute('data-counter', items.length);
         const cloneInputs = cloneItem.querySelectorAll('input');
-        cloneInputs.forEach(function(elem, index) {
-            elem.value = '';
+        cloneInputs.forEach(elem => {
             elem.setAttribute('data-name', `${elem.className}__${elem.parentNode.dataset.counter}`);
+            console.log(elem.dataset.name);
+            elem.value = appData.inputsValues.get(elem.dataset.name) ?? '';
+
             if (elem.placeholder === 'Наименование') {
                 elem.addEventListener('input', function() {
                     elem.value = elem.value.replace(/[^а-яА-Я\s,.]/g, '');
@@ -294,6 +301,7 @@ class AppData {
         if (checkDeposit.checked) {
             depositBank.style.display = 'inline-block';
             depositAmount.style.display = 'inline-block';
+            this.inputsValues.set('deposit', true);
             this.deposit = true;
             depositBank.addEventListener('change', this.changePercent);
         } else {
@@ -303,8 +311,10 @@ class AppData {
             depositBank.value = '';
             depositAmount.value = '';
             this.deposit = false;
+            this.inputsValues.set('deposit', false);
             depositBank.removeEventListener('change', this.changePercent);
         }
+        this.setInputsValues();
     }
 
     eventsListeners() {
@@ -320,56 +330,45 @@ class AppData {
 
         checkDeposit.addEventListener('change', this.depositHandler.bind(this));
 
-        textInputs = document.querySelectorAll('input[type=text]');
-
-        //Задаем атрибут для создания индивидуального ключа хранилища
-        textInputs.forEach((elem, index) => {
-            let key;
-            if (elem.parentNode.hasAttribute('data-counter')) {
-                key = `${elem.className}__${elem.parentNode.dataset.counter}`;
-            } else {
-                key = `${elem.className}__${index}`;
-            }
-            elem.setAttribute('data-name', key);
-        });
-
-        // const inputs = document.getElementsByTagName('input');
-        // for (const elem of inputs) {
-        //     elem.addEventListener('blur', () => {
-        //         console.log(elem);
-        //     });
-        // }
-        // [...inputs].forEach(elem => {
-        //
-        // });
-
         document.addEventListener('click', (e) => {
             let target = e.target;
             if (target.tagName === 'INPUT' && target.type === 'text') {
-                target.addEventListener('blur', () => {
+                const getKeyAndValue = () => {
                     if (target.value) {
-                        const key = `${target.dataset.name}`;
+                        const key = target.dataset.name;
                         const value = target.value;
                         this.inputsValues.set(key, value);
                         this.setInputsValues();
                         console.log(this.inputsValues);
+                        target.removeEventListener('blur', getKeyAndValue);
                         // debugger;
                         // this.setInputsValues();
                     }
-                });
+                };
+                target.addEventListener('blur', getKeyAndValue);
+                // target.removeEventListener('blur', getKeyAndValue);
             }
         });
-
     }
 
     initialize() {
         start.setAttribute('disabled', 'true');
+
+        //уникальный атрибут counter для родителей повторяющихся инпутов, чтобы можно было использовать его в
+        //задании атрибутов дочерних элементов для создания ключей хранилища
         [incomeItems, expensesItems].forEach((elem) => {
             elem.forEach((element, index) => {
                 element.setAttribute('data-counter', index);
             });
         });
 
+        //Задаем атрибут для создания индивидуального ключа хранилища
+        textInputs.forEach((elem, index) => {
+            const key = elem.parentNode.hasAttribute('data-counter') ?
+                `${elem.className}__${elem.parentNode.dataset.counter}` :
+                `${elem.className}__${index}`;
+            elem.setAttribute('data-name', key);
+        });
 
         nameInputs.forEach(function(elem) {
             elem.addEventListener('input', function() {
@@ -381,28 +380,20 @@ class AppData {
                 elem.value = elem.value.replace(/[^\d]/g, '');
             });
         });
+
+        if (this.deposit) {
+            checkDeposit.checked = true;
+            this.depositHandler();
+        }
+
+        this.getInputsValues();
         this.eventsListeners();
-
-
-        // const inputsArray = new Map();
-        // inputs.forEach(function(elem) {
-        //     elem.addEventListener('input', function() {
-        //         // console.log(this.className);
-        //         const selector = this.className;
-        //         const value = this.value;
-        //         const obj = {};
-        //         obj[selector] = value;
-        //         if (value !== '') {
-        //             inputsArray.set(selector, value);
-        //             localStorage.setItem(`inputs`, JSON.stringify(Array.from(inputsArray.entries())));
-        //         }
-        //
-        //
-        //     });
-        // });
     }
 }
 
 const appData = new AppData();
 
 appData.initialize();
+
+//TODO сделать ключ для хранения выбранного элемента селекта.
+//TODO Баг с невоможностью нажатия кнопки старт если была загрузка значения из хранилища

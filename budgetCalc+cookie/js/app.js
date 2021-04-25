@@ -67,6 +67,7 @@ class AppData {
                 elem.value = this.inputsValues.get(elem.dataset.name) ?? '';
             });
         }
+        this.check();
     }
 
     start() {
@@ -79,11 +80,46 @@ class AppData {
         this.getBudget();
         this.showResult();
 
+        //Запись значений полей результата в хранилище и в куки
+        results.forEach((elem, index) => {
+            const key = elem.dataset.name;
+            const value = elem.value;
+            this.inputsValues.set(key, value);
+            this.setInputsValues();
+
+            this.setCookie(key, value, {'max-age': 3600});
+            this.cookieCounter = index + 1;
+        })
+
+        this.lockCalc();
+        this.setCookie('isLoad', true, {'max-age': 3600});
+        this.cookieCounter++;
+
+        console.log(this.cookieCounter);
+    }
+
+    lockCalc() {
         start.style.display = 'none';
         cancel.style.display = 'inline-block';
         textInputs = document.querySelectorAll('input[type="text"]');
         [checkDeposit, depositBank, expensesPlus, incomePlus, ...textInputs].forEach(function(elem) {
             elem.setAttribute('disabled', 'true');
+        });
+    }
+
+    unlockCalc() {
+        const textInputs = document.querySelectorAll('input[type="text"]');
+        [checkDeposit, depositBank, expensesPlus, incomePlus, ...textInputs].forEach(function(elem) {
+            if (elem.type === "text") {
+                elem.value = '';
+            }
+            if (elem.type === 'checkbox') {
+                elem.checked = false;
+            }
+            if (elem.type === 'select-one') {
+                elem.value = '';
+            }
+            elem.removeAttribute('disabled');
         });
     }
 
@@ -101,19 +137,11 @@ class AppData {
         //удаляем данные из хранилища
         localStorage.clear('inputsValues');
 
-        const textInputs = document.querySelectorAll('input[type="text"]');
-        [checkDeposit, depositBank, expensesPlus, incomePlus, ...textInputs].forEach(function(elem) {
-            if (elem.type === "text") {
-                elem.value = '';
-            }
-            if (elem.type === 'checkbox') {
-                elem.checked = false;
-            }
-            if (elem.type === 'select-one') {
-                elem.value = '';
-            }
-            elem.removeAttribute('disabled');
-        });
+
+        this.unlockCalc();
+        this.setCookie('isLoad', false, {'max-age': 3600});
+
+
 
         [incomeItems, expensesItems].forEach(function(list) {
             list.forEach(function(elem, index) {
@@ -148,9 +176,13 @@ class AppData {
         targetMonth.value = this.getTargetMonth();
         incomePeriod.value = this.calcSavedMoney();
 
+        this.setIncomePeriod();
+    }
+
+    setIncomePeriod() {
         periodSelect.addEventListener('change', function() {
-            incomePeriod.value = self.calcSavedMoney();
-        });
+            incomePeriod.value = this.calcSavedMoney();
+        }.bind(this));
     }
 
 
@@ -247,19 +279,6 @@ class AppData {
         return Math.ceil(+targetAmount.value / this.budgetMonth);
     }
 
-    getStatusIncome() {
-        const budgetDay = this.budgetDay;
-        if (budgetDay >= 1200) {
-            return 'У Вас высокий уровень дохода';
-        } else if (budgetDay >= 600 && budgetDay < 1200) {
-            return 'У Вас средний уровень дохода';
-        } else if (budgetDay >= 0 && budgetDay < 600) {
-            return 'К сожалению, у вас уровень дохода ниже среднего';
-        } else {
-            return 'Что-то пошло не так';
-        }
-    }
-
     calcSavedMoney() {
         return this.budgetMonth * periodSelect.value;
     }
@@ -271,49 +290,56 @@ class AppData {
         }
     }
 
-    changePercent() {
-        const selectValue = this.value;
-        console.log(this.type);
-        const validatePercent = function() {
-            depositPercent.value = depositPercent.value.replace(/[^\d]/g, '');
-        };
-        const checkPercent = function() {
-            if (depositPercent.value > 100) {
-                alert('Введите число от 1 до 100!');
-                depositPercent.value = '';
-                depositPercent.focus();
-            }
-        };
-        if (selectValue === 'other') {
+    validatePercent() {
+        depositPercent.value = depositPercent.value.replace(/[^\d]/g, '');
+    };
+
+    checkPercent() {
+        if (depositPercent.value > 100) {
+            alert('Введите число от 1 до 100!');
+            depositPercent.value = '';
+            depositPercent.focus();
+        }
+    };
+
+    checkDepositBankValue() {
+        if (depositBank.value === 'other') {
             depositPercent.style.display = 'inline-block';
-            depositPercent.addEventListener('input', validatePercent);
-            depositPercent.addEventListener('blur', checkPercent);
+            depositPercent.addEventListener('input', this.validatePercent);
+            depositPercent.addEventListener('blur', this.checkPercent);
             //домашка
         } else {
             depositPercent.style.display = 'none';
-            depositPercent.removeEventListener('input', validatePercent);
-            depositPercent.removeEventListener('blur', checkPercent);
-            depositPercent.value = selectValue;
+            depositPercent.removeEventListener('input', this.validatePercent);
+            depositPercent.removeEventListener('blur', this.checkPercent);
+            depositPercent.value = depositBank.value;
         }
+    }
+
+    changePercent() {
+        this.inputsValues.set(depositBank.className, depositBank.selectedIndex);
+        this.setInputsValues();
+        this.checkDepositBankValue();
     }
 
     depositHandler() {
         if (checkDeposit.checked) {
             depositBank.style.display = 'inline-block';
             depositAmount.style.display = 'inline-block';
-            this.inputsValues.set('deposit', true);
+            // this.inputsValues.set('deposit', true);
             this.deposit = true;
-            depositBank.addEventListener('change', this.changePercent);
+            depositBank.addEventListener('change', this.changePercent.bind(this));
         } else {
             depositBank.style.display = 'none';
             depositAmount.style.display = 'none';
-
+            depositPercent.style.display = 'none';
             depositBank.value = '';
             depositAmount.value = '';
             this.deposit = false;
-            this.inputsValues.set('deposit', false);
+            // this.inputsValues.set('deposit', false);
             depositBank.removeEventListener('change', this.changePercent);
         }
+        this.inputsValues.set('deposit', checkDeposit.checked);
         this.setInputsValues();
     }
 
@@ -324,8 +350,12 @@ class AppData {
         expensesPlus.addEventListener('click', this.addExpIncBlock);
         incomePlus.addEventListener('click', this.addExpIncBlock);
 
-        periodSelect.addEventListener('change', function() {
+        periodSelect.addEventListener('change', () => {
             periodAmount.innerText = periodSelect.value;
+            const key = periodSelect.className;
+            const value = periodSelect.value;
+            this.inputsValues.set(key, value);
+            this.setInputsValues();
         });
 
         checkDeposit.addEventListener('change', this.depositHandler.bind(this));
@@ -351,6 +381,38 @@ class AppData {
         });
     }
 
+    getCookie(name) {
+        let matches = document.cookie.match(new RegExp(
+            "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
+        ));
+        return matches ? decodeURIComponent(matches[1]) : undefined;
+    }
+
+    setCookie(name, value, options = {}) {
+
+        options = {
+            path: '/',
+            // при необходимости добавьте другие значения по умолчанию
+            ...options
+        };
+
+        if (options.expires instanceof Date) {
+            options.expires = options.expires.toUTCString();
+        }
+
+        let updatedCookie = encodeURIComponent(name) + "=" + encodeURIComponent(value);
+
+        for (let optionKey in options) {
+            updatedCookie += "; " + optionKey;
+            let optionValue = options[optionKey];
+            if (optionValue !== true) {
+                updatedCookie += "=" + optionValue;
+            }
+        }
+
+        document.cookie = updatedCookie;
+    }
+
     initialize() {
         start.setAttribute('disabled', 'true');
 
@@ -361,6 +423,7 @@ class AppData {
                 element.setAttribute('data-counter', index);
             });
         });
+
 
         //Задаем атрибут для создания индивидуального ключа хранилища
         textInputs.forEach((elem, index) => {
@@ -381,19 +444,64 @@ class AppData {
             });
         });
 
+        //Задание значения селекта из хранилища
+        depositBank.selectedIndex = this.inputsValues.get(depositBank.className) ?? 0;
+        this.checkDepositBankValue();
+
+        //Задание значения ренжслайдера из хранилища
+        periodSelect.value = this.inputsValues.get(periodSelect.className) ?? 0;
+        periodAmount.innerText = periodSelect.value;
+
         if (this.deposit) {
             checkDeposit.checked = true;
             this.depositHandler();
         }
 
         this.getInputsValues();
+        // this.showResult();
         this.eventsListeners();
+
+        // alert(document.cookie);
+
+        this.deleteAllCookies();
+
+        if (this.getCookie('isLoad')) {
+            this.start();
+        }
+
+
+
+        setInterval(this.checkCookieCounter.bind(this), 5000);
+
+
     }
+
+    checkCookieCounter() {
+        if (this.cookieCounter !== 8) {
+            this.reset();
+        }
+    }
+
+    deleteCookie(name) {
+        this.setCookie(name, "", {'max-age': -1})
+    }
+
+    deleteAllCookies() {
+        const cookies = document.cookie.split(';');
+        cookies.forEach((elem) => {
+            const fullCookie = elem.trim().split('=');
+            const cookieName = fullCookie[0];
+            console.log(cookieName);
+            // document.cookie = `${cookieName}=; max-age=-1`;
+            this.deleteCookie('isLoad');
+        });
+        console.log(document.cookie);
+    }
+
 }
 
 const appData = new AppData();
 
 appData.initialize();
 
-//TODO сделать ключ для хранения выбранного элемента селекта.
-//TODO Баг с невоможностью нажатия кнопки старт если была загрузка значения из хранилища
+//

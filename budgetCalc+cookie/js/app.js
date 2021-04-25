@@ -55,6 +55,7 @@ class AppData {
         this.inputsValues = localStorage.getItem('inputsValues') ?
             new Map(JSON.parse(localStorage.getItem('inputsValues'))) :
             new Map();
+        this.addedCookies = new Map();
     }
 
     setInputsValues() {
@@ -82,20 +83,18 @@ class AppData {
 
         //Запись значений полей результата в хранилище и в куки
         results.forEach((elem, index) => {
-            const key = elem.dataset.name;
+            const key = elem.dataset.name.split(' ')[0] + `${index}`;
             const value = elem.value;
             this.inputsValues.set(key, value);
+            this.addedCookies.set(key, value);
             this.setInputsValues();
-
             this.setCookie(key, value, {'max-age': 3600});
-            this.cookieCounter = index + 1;
-        })
+        });
 
         this.lockCalc();
         this.setCookie('isLoad', true, {'max-age': 3600});
-        this.cookieCounter++;
+        this.addedCookies.set('isLoad', true);
 
-        console.log(this.cookieCounter);
     }
 
     lockCalc() {
@@ -133,14 +132,13 @@ class AppData {
         this.addIncome = [];
         this.addExpenses = [];
         this.inputsValues = new Map();
+        this.addedCookies = [];
 
         //удаляем данные из хранилища
         localStorage.clear('inputsValues');
-
-
+        this.deleteAllCookies();
         this.unlockCalc();
-        this.setCookie('isLoad', false, {'max-age': 3600});
-
+        // this.setCookie('isLoad', false, {'max-age': 3600});
 
 
         [incomeItems, expensesItems].forEach(function(list) {
@@ -196,7 +194,6 @@ class AppData {
         const cloneInputs = cloneItem.querySelectorAll('input');
         cloneInputs.forEach(elem => {
             elem.setAttribute('data-name', `${elem.className}__${elem.parentNode.dataset.counter}`);
-            console.log(elem.dataset.name);
             elem.value = appData.inputsValues.get(elem.dataset.name) ?? '';
 
             if (elem.placeholder === 'Наименование') {
@@ -292,7 +289,7 @@ class AppData {
 
     validatePercent() {
         depositPercent.value = depositPercent.value.replace(/[^\d]/g, '');
-    };
+    }
 
     checkPercent() {
         if (depositPercent.value > 100) {
@@ -300,7 +297,7 @@ class AppData {
             depositPercent.value = '';
             depositPercent.focus();
         }
-    };
+    }
 
     checkDepositBankValue() {
         if (depositBank.value === 'other') {
@@ -343,6 +340,8 @@ class AppData {
         this.setInputsValues();
     }
 
+
+
     eventsListeners() {
         start.addEventListener('click', this.start.bind(this));
         cancel.addEventListener('click', this.reset.bind(this));
@@ -371,11 +370,22 @@ class AppData {
                         this.setInputsValues();
                         console.log(this.inputsValues);
                         target.removeEventListener('blur', getKeyAndValue);
+                        target.removeEventListener('keypress', (e) => {
+                            if (e.key === 'Tab') {
+                                getKeyAndValue();
+                            }
+                        });
+
                         // debugger;
                         // this.setInputsValues();
                     }
                 };
                 target.addEventListener('blur', getKeyAndValue);
+                target.addEventListener('keydown', (e) => {
+                    if (e.key === 'Tab') {
+                        getKeyAndValue();
+                    }
+                });
                 // target.removeEventListener('blur', getKeyAndValue);
             }
         });
@@ -411,6 +421,15 @@ class AppData {
         }
 
         document.cookie = updatedCookie;
+    }
+
+    deleteAllCookies() {
+        const cookies = document.cookie.split(';');
+        cookies.forEach((elem) => {
+            const fullCookie = elem.trim().split('=');
+            const cookieName = fullCookie[0];
+            this.deleteCookie(cookieName);
+        });
     }
 
     initialize() {
@@ -458,49 +477,36 @@ class AppData {
         }
 
         this.getInputsValues();
-        // this.showResult();
         this.eventsListeners();
 
-        // alert(document.cookie);
-
-        this.deleteAllCookies();
-        console.log(document.cookie);
 
         if (this.getCookie('isLoad')) {
             this.start();
         }
 
-
-
-
-
-        setInterval(this.checkCookieCounter.bind(this), 15000);
-
-
+        //Проверка на соответствие добавленных куков и фактических, если отличается - ресет.
+        setInterval(this.checkCookiesIntegrity.bind(this), 15000);
     }
 
-    checkCookieCounter() {
+    checkCookiesIntegrity() {
         console.log('checking cookies...');
-        if (this.cookieCounter !== 8) {
-            this.reset();
-        }
+        const cookies = document.cookie.split(';');
+        const cookiesNamesArray = new Map();
+        cookies.forEach(element => {
+            cookiesNamesArray.set(element.split('=')[0].trim(), '');
+        });
+        //Теперь у нас 2 Map с куками. Проверка на потерю
+        this.addedCookies.forEach((value, key) => {
+            if (!cookiesNamesArray.has(key)) {
+                this.reset();
+            }
+        });
     }
 
     deleteCookie(name) {
-        this.setCookie(name, "", {'max-age': -1})
+        this.setCookie(name, "", {'max-age': -1});
     }
 
-    deleteAllCookies() {
-        const cookies = document.cookie.split(';');
-        cookies.forEach((elem) => {
-            const fullCookie = elem.trim().split('=');
-            console.log(fullCookie);
-            const cookieName = fullCookie[0];
-            console.log(cookieName);
-            document.cookie = `result-total%20expenses111111=fuck; max-age=-1`;
-            // this.deleteCookie(`${cookieName}`);
-        });
-    }
 
 }
 

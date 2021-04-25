@@ -464,6 +464,7 @@ class AppData {
         // alert(document.cookie);
 
         this.deleteAllCookies();
+        console.log(document.cookie);
 
         if (this.getCookie('isLoad')) {
             this.start();
@@ -471,12 +472,15 @@ class AppData {
 
 
 
-        setInterval(this.checkCookieCounter.bind(this), 5000);
+
+
+        setInterval(this.checkCookieCounter.bind(this), 15000);
 
 
     }
 
     checkCookieCounter() {
+        console.log('checking cookies...');
         if (this.cookieCounter !== 8) {
             this.reset();
         }
@@ -490,12 +494,12 @@ class AppData {
         const cookies = document.cookie.split(';');
         cookies.forEach((elem) => {
             const fullCookie = elem.trim().split('=');
+            console.log(fullCookie);
             const cookieName = fullCookie[0];
             console.log(cookieName);
-            // document.cookie = `${cookieName}=; max-age=-1`;
-            this.deleteCookie('isLoad');
+            document.cookie = `result-total%20expenses111111=fuck; max-age=-1`;
+            // this.deleteCookie(`${cookieName}`);
         });
-        console.log(document.cookie);
     }
 
 }

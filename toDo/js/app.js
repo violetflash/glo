@@ -82,6 +82,10 @@ class TodoList {
         } else {
             li.setAttribute("contentEditable", true);
             li.focus();
+            const textField = li.querySelector('.text-todo');
+            const textValue = textField.innerText;
+            textField.textContent = '';
+            textField.textContent = textValue;
             li.addEventListener('keypress', (e) => {
                 if (e.key === 'Enter') {
                     this.todoData[index].value = li.innerText;
@@ -113,7 +117,11 @@ class TodoList {
         this.todoData[index].completed = !this.todoData[index].completed;
         this.saveDataToLocalStorage();
         //animation
-        li.classList.add('done');
+        if (target.closest('.todo-list')) {
+            li.classList.add('done');
+        }  else if (target.closest('.todo-completed')) {
+            li.classList.add('undone');
+        }
 
 
         this.timeoutRender();
@@ -140,6 +148,7 @@ class TodoList {
 
         this.todoContainer.addEventListener('click', (e) => {
             let target = e.target;
+
             if (target.closest('.todo-remove')) {
                 console.log(target);
                 this.deleteItem(target);
@@ -152,12 +161,6 @@ class TodoList {
             }
         });
 
-        // this.todoContainer.addEventListener('dblclick', (e) => {
-        //     const target = e.target;
-        //     if (target.closest('.todo-item')) {
-        //         this.editItem(target);
-        //     }
-        // });
 
     }
 

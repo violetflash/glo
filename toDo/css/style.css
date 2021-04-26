@@ -244,18 +244,24 @@ li::before {
     color: steelblue;
 }
 
-li:focus {
-    /*outline: 2px solid steelblue;*/
-    outline: none;
-    box-shadow: 0 0 3pt 2pt steelblue;
-    background-color: #f5f5c8;
-}
 
 .edit-input {
     background-color: #eed5d5;
     border: none;
     width: 100%;
     /*height: 100px;*/
+}
+
+.text-todo {
+    padding: 5px 10px 5px;
+    width: 80%;
+}
+
+.text-todo:focus {
+    /*outline: 2px solid steelblue;*/
+    outline: none;
+    box-shadow: 0 0 3pt 2pt steelblue;
+    background-color: #f5f5c8;
 }
 
 .delete {
@@ -268,8 +274,8 @@ li:focus {
         transform: translateX(0);
     }
     100% {
-        opacity: 0;
-        transform: translateX(30%);
+        opacity: 0.3;
+        transform: translateX(70%);
     }
 }
 
@@ -284,7 +290,7 @@ li:focus {
     }
     100% {
         opacity: 1;
-        transform: translateY(120%);
+        transform: translateY(110%);
     }
 }
 
@@ -299,6 +305,6 @@ li:focus {
     }
     100% {
         opacity: 1;
-        transform: translateY(-120%);
+        transform: translateY(-110%);
     }
 }

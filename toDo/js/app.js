@@ -74,21 +74,21 @@ class TodoList {
     editItem(target) {
         const li = target.closest('.todo-item');
         const index = li.dataset.index;
-        if (li.hasAttribute('contentEditable')) {
-            li.removeAttribute('contentEditable');
-            this.todoData[index].value = li.innerText;
+        const textField = li.querySelector('.text-todo');
+        if (textField.hasAttribute('contentEditable')) {
+            textField.removeAttribute('contentEditable');
+            this.todoData[index].value = textField.innerText;
             this.saveDataToLocalStorage();
             this.render();
-        } else {
-            li.setAttribute("contentEditable", true);
-            li.focus();
-            const textField = li.querySelector('.text-todo');
-            const textValue = textField.innerText;
-            textField.textContent = '';
-            textField.textContent = textValue;
-            li.addEventListener('keypress', (e) => {
+        }
+        else {
+            textField.setAttribute("contentEditable", true);
+            textField.focus();
+            document.execCommand('selectAll', false, null);
+            document.getSelection().collapseToEnd();
+            textField.addEventListener('keypress', (e) => {
                 if (e.key === 'Enter') {
-                    this.todoData[index].value = li.innerText;
+                    this.todoData[index].value = textField.innerText;
                     this.saveDataToLocalStorage();
                     this.render();
                 }
@@ -97,7 +97,7 @@ class TodoList {
 
         document.addEventListener('click', e => {
             if (!li.contains(e.target)) {
-                li.removeAttribute('contentEditable');
+                textField.removeAttribute('contentEditable');
             }
         });
     }
@@ -139,6 +139,7 @@ class TodoList {
                 newTodo.value = newTodo.value[0].toUpperCase() + newTodo.value.slice(1);
                 this.todoData.push(newTodo);
             } else {
+
                 alert('Похоже Вы забыли ввести задачу!');
             }
             this.saveDataToLocalStorage();

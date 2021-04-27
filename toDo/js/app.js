@@ -9,14 +9,17 @@ class TodoList {
             this.todoList = controls.todoList;
             this.todoCompleted = controls.todoCompleted;
             this.todoContainer = controls.todoContainer;
-            this.render = this.render.bind(this);
-            this.timeoutRender = this.timeoutRender.bind(this);
-            this.counter = 0;
         }
+        this.render = this.render.bind(this);
+        this.timeoutRender = this.timeoutRender.bind(this);
+    }
+
+    generateKey() {
+        return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
     }
 
     saveDataToLocalStorage() {
-        localStorage.setItem('todoData', JSON.stringify(this.todoData));
+        localStorage.setItem('todoData', JSON.stringify([...this.todoData]));
     }
 
     clearLists() {
@@ -28,32 +31,20 @@ class TodoList {
         setTimeout(this.render, 300);
     }
 
-    // checkLength(counter, value) {
-    //     const {todoData} = this;
-    //     todoData.forEach((elem) => {
-    //         for (const key in elem) {
-    //             if (elem.completed === value) {
-    //                 counter++;
-    //             }
-    //         }
-    //     });
-    //     return counter;
-    // }
-
     render() {
         this.clearLists();
-        this.todoData.forEach((item, index) => {
+        this.todoData.forEach((item) => {
             const li = document.createElement('li');
             li.classList.add('todo-item');
-            li.setAttribute('data-index', `${index}`);
+            li.setAttribute('data-key', `${item.key}`);
             li.innerHTML = `
                   <span class="text-todo">${item.value}</span>
                   <div class="todo-buttons">
                     <button class="todo-remove"></button>
                     <button class="todo-complete"></button>
                     <button class="todo-edit"></button>
-                  </div>`;
-
+                  </div>
+            `;
 
             if (item.completed) {
                 this.todoCompleted.append(li);
@@ -67,34 +58,30 @@ class TodoList {
         });
     }
 
-    handler() {
-
-    }
-
     editItem(target) {
         const li = target.closest('.todo-item');
-        const index = li.dataset.index;
+        const key = li.dataset.key;
         const textField = li.querySelector('.text-todo');
         if (textField.hasAttribute('contentEditable')) {
             textField.removeAttribute('contentEditable');
-            this.todoData[index].value = textField.innerText;
+            this.todoData.get(key).value = textField.innerText;
             this.saveDataToLocalStorage();
             this.render();
-        }
-        else {
+        } else {
             textField.setAttribute("contentEditable", true);
             textField.focus();
             document.execCommand('selectAll', false, null);
             document.getSelection().collapseToEnd();
             textField.addEventListener('keypress', (e) => {
                 if (e.key === 'Enter') {
-                    this.todoData[index].value = textField.innerText;
+                    this.todoData.get(key).value = textField.innerText;
                     this.saveDataToLocalStorage();
                     this.render();
                 }
             });
         }
 
+        //Завершение редактирования по клику вне поля
         document.addEventListener('click', e => {
             if (!li.contains(e.target)) {
                 textField.removeAttribute('contentEditable');
@@ -104,8 +91,8 @@ class TodoList {
 
     deleteItem(target) {
         const li = target.closest('.todo-item');
-        const index = li.dataset.index;
-        this.todoData.splice(index, 1);
+        const key = li.dataset.key;
+        this.todoData.delete(key);
         this.saveDataToLocalStorage();
         li.classList.add('delete');
         this.timeoutRender();
@@ -113,35 +100,37 @@ class TodoList {
 
     completedItem(target) {
         const li = target.closest('.todo-item');
-        const index = li.dataset.index;
-        this.todoData[index].completed = !this.todoData[index].completed;
+        const key = li.dataset.key;
+        this.todoData.get(key).completed = !this.todoData.get(key).completed;
         this.saveDataToLocalStorage();
+
         //animation
         if (target.closest('.todo-list')) {
             li.classList.add('done');
-        }  else if (target.closest('.todo-completed')) {
+        } else if (target.closest('.todo-completed')) {
             li.classList.add('undone');
         }
-
 
         this.timeoutRender();
     }
 
-    eventListeners() {
+    handler() {
         this.form.addEventListener('submit', (e) => {
             e.preventDefault();
 
             const newTodo = {
                 value: this.input.value.trim(),
                 completed: false,
+                key: this.generateKey(),
             };
+
             if (newTodo.value) {
                 newTodo.value = newTodo.value[0].toUpperCase() + newTodo.value.slice(1);
-                this.todoData.push(newTodo);
+                this.todoData.set(newTodo.key, newTodo);
             } else {
-
                 alert('Похоже Вы забыли ввести задачу!');
             }
+
             this.saveDataToLocalStorage();
             this.input.value = '';
             this.render();
@@ -151,31 +140,26 @@ class TodoList {
             let target = e.target;
 
             if (target.closest('.todo-remove')) {
-                console.log(target);
                 this.deleteItem(target);
             } else if (target.closest('.todo-complete')) {
-                console.log(target);
-                // target = target.closest('.todo-complete');
                 this.completedItem(target);
             } else if (target.closest('.todo-edit')) {
                 this.editItem(target);
             }
         });
-
-
     }
 
-    initialize() {
+    init() {
+        this.handler();
         this.render();
-        this.eventListeners();
     }
 }
 
-const todo1 = new TodoList(
+const todo = new TodoList(
     {
         todoData: localStorage.getItem('todoData') ?
-            JSON.parse(localStorage.getItem('todoData')) :
-            [],
+            new Map(JSON.parse(localStorage.getItem('todoData'))) :
+            new Map(),
         form: document.querySelector('.todo-control'),
         input: document.querySelector('.header-input'),
         todoList: document.querySelector('.todo-list'),
@@ -184,4 +168,4 @@ const todo1 = new TodoList(
     }
 );
 
-todo1.initialize();
+todo.init();

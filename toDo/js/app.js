@@ -12,6 +12,8 @@ class TodoList {
         }
         this.render = this.render.bind(this);
         this.timeoutRender = this.timeoutRender.bind(this);
+        this.addElement = this.addElement.bind(this);
+        this.elementControllers = this.elementControllers.bind(this);
     }
 
     generateKey() {
@@ -38,12 +40,12 @@ class TodoList {
             li.classList.add('todo-item');
             li.setAttribute('data-key', `${item.key}`);
             li.innerHTML = `
-                  <span class="text-todo">${item.value}</span>
-                  <div class="todo-buttons">
-                    <button class="todo-remove"></button>
-                    <button class="todo-complete"></button>
-                    <button class="todo-edit"></button>
-                  </div>
+              <span class="text-todo">${item.value}</span>
+              <div class="todo-buttons">
+                <button class="todo-remove"></button>
+                <button class="todo-complete"></button>
+                <button class="todo-edit"></button>
+              </div>
             `;
 
             if (item.completed) {
@@ -56,6 +58,7 @@ class TodoList {
                 li.setAttribute('data-counter', todoList.length + ')');
             }
         });
+
     }
 
     editItem(target) {
@@ -82,11 +85,11 @@ class TodoList {
         }
 
         //Завершение редактирования по клику вне поля
-        document.addEventListener('click', e => {
-            if (!li.contains(e.target)) {
-                textField.removeAttribute('contentEditable');
-            }
-        });
+        // document.addEventListener('click', e => {
+        //     if (!li.matches(e.target)) {
+        //         textField.removeAttribute('contentEditable');
+        //     }
+        // });
     }
 
     deleteItem(target) {
@@ -114,39 +117,41 @@ class TodoList {
         this.timeoutRender();
     }
 
-    handler() {
-        this.form.addEventListener('submit', (e) => {
-            e.preventDefault();
+    addElement(e) {
+        e.preventDefault();
 
-            const newTodo = {
-                value: this.input.value.trim(),
-                completed: false,
-                key: this.generateKey(),
-            };
+        const newTodo = {
+            value: this.input.value.trim(),
+            completed: false,
+            key: this.generateKey(),
+        };
 
-            if (newTodo.value) {
-                newTodo.value = newTodo.value[0].toUpperCase() + newTodo.value.slice(1);
-                this.todoData.set(newTodo.key, newTodo);
-            } else {
-                alert('Похоже Вы забыли ввести задачу!');
-            }
-
+        if (newTodo.value) {
+            newTodo.value = newTodo.value[0].toUpperCase() + newTodo.value.slice(1);
+            this.todoData.set(newTodo.key, newTodo);
             this.saveDataToLocalStorage();
             this.input.value = '';
             this.render();
-        });
+        } else {
+            alert('Похоже Вы забыли ввести задачу!');
+        }
+    }
 
-        this.todoContainer.addEventListener('click', (e) => {
-            let target = e.target;
+    elementControllers(e) {
+        let target = e.target;
 
-            if (target.closest('.todo-remove')) {
-                this.deleteItem(target);
-            } else if (target.closest('.todo-complete')) {
-                this.completedItem(target);
-            } else if (target.closest('.todo-edit')) {
-                this.editItem(target);
-            }
-        });
+        if (target.closest('.todo-remove')) {
+            this.deleteItem(target);
+        } else if (target.closest('.todo-complete')) {
+            this.completedItem(target);
+        } else if (target.closest('.todo-edit')) {
+            this.editItem(target);
+        }
+    }
+
+    handler() {
+        this.form.addEventListener('submit', this.addElement);
+        this.todoContainer.addEventListener('click', this.elementControllers);
     }
 
     init() {

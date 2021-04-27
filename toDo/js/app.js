@@ -63,13 +63,12 @@ class TodoList {
 
     editItem(target) {
         const li = target.closest('.todo-item');
-        const editBtn = target.closest('.todo-edit');
+
         const key = li.dataset.key;
         const textField = li.querySelector('.text-todo');
         if (textField.hasAttribute('contentEditable')) {
             textField.removeAttribute('contentEditable');
             textField.classList.remove('focused');
-            editBtn.classList.remove('js-bordered');
             this.todoData.get(key).value = textField.innerText;
             this.saveDataToLocalStorage();
             this.render();
@@ -77,7 +76,6 @@ class TodoList {
             textField.setAttribute("contentEditable", true);
             textField.focus();
             textField.classList.add('focused');
-            editBtn.classList.add('js-bordered');
             document.execCommand('selectAll', false, null);
             document.getSelection().collapseToEnd();
             textField.addEventListener('keypress', (e) => {
@@ -150,6 +148,8 @@ class TodoList {
         } else if (target.closest('.todo-complete')) {
             this.completedItem(target);
         } else if (target.closest('.todo-edit')) {
+            target = target.closest('.todo-edit');
+            target.classList.toggle('js-bordered');
             this.editItem(target);
         }
     }

@@ -169,6 +169,10 @@ body {
     -moz-appearance: none;
 }
 
+.todo-buttons button.js-bordered {
+    border: 3px solid #c0c0c0;
+}
+
 .todo-buttons .buttons button:last-of-type:before {
     content: '';
     width: 1px;
@@ -257,7 +261,7 @@ li::before {
     width: 80%;
 }
 
-.text-todo:focus {
+.text-todo.focused {
     /*outline: 2px solid steelblue;*/
     outline: none;
     box-shadow: 0 0 3pt 2pt steelblue;

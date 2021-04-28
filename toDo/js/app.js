@@ -38,7 +38,7 @@ class TodoList {
         this.todoData.forEach((item) => {
             const li = document.createElement('li');
             li.classList.add('todo-item');
-            li.setAttribute('data-key', `${item.key}`);
+            li.setAttribute('data-key', item.key);
             li.innerHTML = `
               <span class="text-todo">${item.value}</span>
               <div class="todo-buttons">

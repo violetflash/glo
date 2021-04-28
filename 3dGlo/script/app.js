@@ -347,7 +347,8 @@ window.addEventListener('DOMContentLoaded', () => {
         };
         const switchSrcToDataAttr = (target, name) => {
             const dataAttr = getDatasetValue(target, name);
-            setDatasetValue(target, name, target.src);
+            const src = target.src.replace(/.+Glo\//g, '');
+            setDatasetValue(target, name, src);
             target.src = dataAttr;
         };
 
@@ -362,6 +363,7 @@ window.addEventListener('DOMContentLoaded', () => {
             setTimeout(() => {
                 target.classList.remove('js-faded');
             }, 250);
+            console.dir(target);
         };
 
         commandSection.addEventListener('mouseover', changeImageSrc);

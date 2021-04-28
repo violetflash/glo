@@ -377,19 +377,6 @@ window.addEventListener('DOMContentLoaded', () => {
         this.value = this.value.replace(/[^\d]/g, '');
     };
 
-    const textValidator = function() {
-        this.value = this.value.replace(/[^а-яА-Я -]/g, '');
-    };
-
-    const emailValidator = function() {
-        this.value = this.value.replace(/[^A-Za-z@_.!~*'-]/g, '');
-    };
-
-    const phoneValidator = function() {
-        this.value = this.value.replace(/[^\d()-]/g, '');
-    };
-
-
     //Calculator validator
     const validateCalc = () => {
         const calc = document.getElementById('calc');
@@ -410,6 +397,20 @@ window.addEventListener('DOMContentLoaded', () => {
     validateCalc();
 
     //CONNECT SECTION VALIDATION
+
+    const textValidator = function() {
+        this.value = this.value.replace(/[^а-яА-Я -]/g, '');
+    };
+
+    const emailValidator = function() {
+        this.value = this.value.replace(/[^A-Za-z@_.!~*'-]/g, '');
+    };
+
+    const phoneValidator = function() {
+        this.value = this.value.replace(/[^\d()-]/g, '');
+    };
+
+
     const connectValidation = () => {
         const connect = document.getElementById('connect');
 
@@ -422,7 +423,9 @@ window.addEventListener('DOMContentLoaded', () => {
          */
 
         const checkWholeValidation = function() {
-            this.value = this.value.replace(/-+/g, '-').replace(/\s+/g, ' ').replace(/^\s+|\s+$/g, '');
+            this.value = this.value.replace(/-+/g, '-')
+                .replace(/\s+/g, ' ')
+                .replace(/^[\s|-]+|[\s|-]+$/g, '');
 
             if (this.value.length === 1) {
                 this.value = '';
@@ -434,10 +437,6 @@ window.addEventListener('DOMContentLoaded', () => {
                     .replace(/^[а-я]|[\s|-][а-я]/g, letter => letter.toUpperCase());
                 this.value = name;
             }
-
-            // if (this.value) {
-            //     this.value = this.value[0].toLowerCase() + this.value.slice(1);
-            // }
         };
 
         const connectValidator = e => {

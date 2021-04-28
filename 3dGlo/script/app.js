@@ -429,6 +429,9 @@ window.addEventListener('DOMContentLoaded', () => {
         //TODO БАГ - с имейлом
         const checkWholeValidation = function() {
             console.log(this);
+            let trimmedValue = this.value;
+            this.value = '';
+            this.value = trimmedValue;
             this.value = this.value.replace(/\s+/g, ' ')
                 .replace(/-+/g, '-')
                 .replace(/^\s+|\s+$/g, '')

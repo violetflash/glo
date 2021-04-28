@@ -426,15 +426,18 @@ window.addEventListener('DOMContentLoaded', () => {
         Для поля "Ваше имя" Первая буква каждого слова должна приводиться к
         верхнему регистру, а все остальные — к нижнему.
          */
-
+        //TODO БАГ - с имейлом
         const checkWholeValidation = function() {
+            console.log(this);
             this.value = this.value.replace(/\s+/g, ' ')
                 .replace(/-+/g, '-')
+                .replace(/^\s+|\s+$/g, '')
                 .replace(/^[\s|-]+|[\s|-]+$/g, '');
 
             if (this.value.length === 1) {
                 this.value = '';
             }
+
 
             if (this.name === 'user_name' && this.value) {
                 let name = this.value;
@@ -464,7 +467,6 @@ window.addEventListener('DOMContentLoaded', () => {
             }
 
             target.addEventListener('blur', checkWholeValidation);
-
         };
 
         connect.addEventListener('click', fieldValidator);

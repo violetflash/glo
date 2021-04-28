@@ -421,8 +421,23 @@ window.addEventListener('DOMContentLoaded', () => {
         верхнему регистру, а все остальные — к нижнему.
          */
 
-        const checkValidation = function() {
+        const checkWholeValidation = function() {
+            this.value = this.value.replace(/-+/g, '-').replace(/\s+/g, ' ').replace(/^\s+|\s+$/g, '');
 
+            if (this.value.length === 1) {
+                this.value = '';
+            }
+
+            if (this.name === 'user_name' && this.value) {
+                let name = this.value;
+                name = name.replace(/./g, letter => letter.toLowerCase())
+                    .replace(/^[а-я]|\s[а-я]/g, letter => letter.toUpperCase());
+                this.value = name;
+            }
+
+            // if (this.value) {
+            //     this.value = this.value[0].toLowerCase() + this.value.slice(1);
+            // }
         };
 
         const connectValidator = e => {
@@ -444,7 +459,7 @@ window.addEventListener('DOMContentLoaded', () => {
                 target.addEventListener('input', phoneValidator);
             }
 
-            target.addEventListener('blur', checkValidation);
+            target.addEventListener('blur', checkWholeValidation);
 
         };
 

@@ -428,7 +428,7 @@ window.addEventListener('DOMContentLoaded', () => {
          */
 
         const checkWholeValidation = function() {
-            this.value = this.value.replace(/\s+/g, '')
+            this.value = this.value.replace(/\s+/g, ' ')
                 .replace(/-+/g, '-')
                 .replace(/^[\s|-]+|[\s|-]+$/g, '');
 

@@ -431,7 +431,7 @@ window.addEventListener('DOMContentLoaded', () => {
             if (this.name === 'user_name' && this.value) {
                 let name = this.value;
                 name = name.replace(/./g, letter => letter.toLowerCase())
-                    .replace(/^[а-я]|\s[а-я]/g, letter => letter.toUpperCase());
+                    .replace(/^[а-я]|[\s|-][а-я]/g, letter => letter.toUpperCase());
                 this.value = name;
             }
 

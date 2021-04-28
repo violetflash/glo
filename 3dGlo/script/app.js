@@ -319,7 +319,7 @@ window.addEventListener('DOMContentLoaded', () => {
         });
 
         slider.addEventListener('mouseover', (e) => {
-            let target = e.target;
+            const target = e.target;
             if (target.matches('.portfolio-btn') || target.matches('.dot')) {
                 stopSlide();
             }
@@ -336,4 +336,120 @@ window.addEventListener('DOMContentLoaded', () => {
 
 
     slider();
+
+    //OUR TEAM HOVER
+    const commandImagesHandler = () => {
+        const commandSection = document.getElementById('command');
+
+        const getDatasetValue = (target, name) => target.dataset[name];
+        const setDatasetValue = (target, name, value) => {
+            target.dataset[name] = value;
+        };
+        const switchSrcToDataAttr = (target, name) => {
+            const dataAttr = getDatasetValue(target, name);
+            setDatasetValue(target, name, target.src);
+            target.src = dataAttr;
+        };
+
+        const changeImageSrc = e => {
+            let target = e.target;
+            if (!target.classList.contains('command__photo')) {
+                return;
+            }
+            target = target.closest('.command__photo');
+            target.classList.add('js-faded');
+            setTimeout(switchSrcToDataAttr.bind(null, target, 'img'), 250);
+            setTimeout(() => {
+                target.classList.remove('js-faded');
+            }, 250);
+        };
+
+        commandSection.addEventListener('mouseover', changeImageSrc);
+        commandSection.addEventListener('mouseout', changeImageSrc);
+    };
+
+    commandImagesHandler();
+
+
+    //ВАЛИДАЦИЯ
+
+    const digitsValidator = function() {
+        this.value = this.value.replace(/[^\d]/g, '');
+    };
+
+    const textValidator = function() {
+        this.value = this.value.replace(/[^а-яА-Я -]/g, '');
+    };
+
+    const emailValidator = function() {
+        this.value = this.value.replace(/[^A-Za-z@_.!~*'-]/g, '');
+    };
+
+    const phoneValidator = function() {
+        this.value = this.value.replace(/[^\d()-]/g, '');
+    };
+
+
+    //Calculator validator
+    const validateCalc = () => {
+        const calc = document.getElementById('calc');
+
+        const calcValidator = e => {
+            const target = e.target;
+
+            if (target.tagName !== 'INPUT' && !target.classList.contains('calc-item')) {
+                return;
+            }
+
+            target.addEventListener('input', digitsValidator);
+        };
+
+        calc.addEventListener('click', calcValidator);
+    };
+
+    validateCalc();
+
+    //CONNECT SECTION VALIDATION
+    const connectValidation = () => {
+        const connect = document.getElementById('connect');
+
+        /*
+        Должны удаляться все символы, кроме допустимых
+        Несколько идущих подряд пробелов или дефисов должны заменяться на один.
+        Пробелы и дефисы в начале и конце значения должны удаляться.
+        Для поля "Ваше имя" Первая буква каждого слова должна приводиться к
+        верхнему регистру, а все остальные — к нижнему.
+         */
+
+        const checkValidation = function() {
+
+        };
+
+        const connectValidator = e => {
+            const target = e.target;
+
+            if (target.tagName !== 'INPUT' && !target.classList.contains('top-form')) {
+                return;
+            }
+
+            if (target.name === 'user_name' || target.name === 'user_message') {
+                target.addEventListener('input', textValidator);
+            }
+
+            if (target.name === 'user_email') {
+                target.addEventListener('input', emailValidator);
+            }
+
+            if (target.name === 'user_phone') {
+                target.addEventListener('input', phoneValidator);
+            }
+
+            target.addEventListener('blur', checkValidation);
+
+        };
+
+        connect.addEventListener('click', connectValidator);
+    };
+
+    connectValidation();
 });

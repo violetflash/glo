@@ -833,6 +833,21 @@ footer .web {
   color: #fff
 }
 
+.js-faded {
+  animation: fade 0.8s;
+}
+
+@keyframes fade {
+  0% {
+    opacity: 1;
+    /*transform: translateY(0);*/
+  }
+  100% {
+    opacity: 0;
+    /*transform: translateY(110%);*/
+  }
+}
+
 @media (max-width: 991px) {
   body {
     font-size: 1.5rem

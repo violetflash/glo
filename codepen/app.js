@@ -16,7 +16,8 @@
 'use strict';
 
 const script1 = () => {
-    document.body.innerHTML = document.body.innerHTML.replace(/id="task1".+<\/div>./g, 'WOW!');
+    const task1 = document.getElementById('task1');
+    task1.innerHTML = task1.innerHTML.replace(/функци[а-я]*/g, (match) => `<strong>${match}</strong>`);
 };
 
 script1();

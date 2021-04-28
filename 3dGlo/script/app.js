@@ -429,12 +429,12 @@ window.addEventListener('DOMContentLoaded', () => {
         //TODO БАГ - с имейлом
         const checkWholeValidation = function() {
             console.log(this);
-            let trimmedValue = this.value;
-            this.value = '';
-            this.value = trimmedValue;
+            // let trimmedValue = this.value;
+            // this.value = '';
+            // this.value = trimmedValue;
+
             this.value = this.value.replace(/\s+/g, ' ')
                 .replace(/-+/g, '-')
-                .replace(/^\s+|\s+$/g, '')
                 .replace(/^[\s|-]+|[\s|-]+$/g, '');
 
             if (this.value.length === 1) {
@@ -462,6 +462,7 @@ window.addEventListener('DOMContentLoaded', () => {
             }
 
             if (target.name === 'user_email') {
+                target.type = 'text';
                 target.addEventListener('input', emailValidator);
             }
 

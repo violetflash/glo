@@ -17,7 +17,7 @@ script1();
 // из двух цифр, пример: 09:00. заключить найденное время в тег <b></b>
 const script2 = () => {
     const task2 = document.getElementById('task2');
-    task2.innerHTML = task2.innerHTML.replace(/\d{2}:\d{2}/g, (match) => `<b>${match}</b>`);
+    task2.innerHTML = task2.innerHTML.replace(/(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]/g, (match) => `<b>${match}</b>`);
 };
 
 script2();

@@ -1,9 +1,4 @@
 /*
-
-
-
-
-
 Попрактикуйтесь на кроссвордах https://regexcrossword.com/
 и на задачках https://habr.com/ru/post/167015/
  */
@@ -29,7 +24,7 @@ script2();
 
 // 3. Создать запрос во всем документе найти текст в кавычках и заключить его в теги <mark></mark>
 const script3 = () => { //TODO убрать пробел перед открывающимися кавычками
-    document.body.innerHTML = document.body.innerHTML.replace(/\s['|"|«].*?['|"|»]/g, (match) => `<mark>${match}</mark>`);
+    document.body.innerHTML = document.body.innerHTML.replace(/\s['"«].*?['"»]/g, (match) => `<mark>${match}</mark>`);
 };
 
 script3();

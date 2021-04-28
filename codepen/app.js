@@ -52,7 +52,3 @@ const script5 = () => {
 };
 
 script5();
-
-
-// 6. Ссылки такого вида http://site.ru/aaaa/bbbb.html заменить
-//     на <a href="http://site.ru/aaaa/bbbb.html">site.ru</a>

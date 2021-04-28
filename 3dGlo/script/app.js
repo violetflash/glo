@@ -413,8 +413,11 @@ window.addEventListener('DOMContentLoaded', () => {
     };
 
 
-    const connectValidation = () => {
-        const connect = document.getElementById('connect');
+    const validation = () => {
+        const connect = document.getElementById('connect'),
+            mainForm = document.querySelector('.main-form'),
+            popup = document.querySelector('.popup');
+
 
         /*
         Должны удаляться все символы, кроме допустимых
@@ -425,8 +428,8 @@ window.addEventListener('DOMContentLoaded', () => {
          */
 
         const checkWholeValidation = function() {
-            this.value = this.value.replace(/-+/g, '-')
-                .replace(/\s+/g, ' ')
+            this.value = this.value.replace(/\s+/g, '')
+                .replace(/-+/g, '-')
                 .replace(/^[\s|-]+|[\s|-]+$/g, '');
 
             if (this.value.length === 1) {
@@ -441,7 +444,7 @@ window.addEventListener('DOMContentLoaded', () => {
             }
         };
 
-        const connectValidator = e => {
+        const fieldValidator = e => {
             const target = e.target;
 
             if (target.tagName !== 'INPUT' && !target.classList.contains('top-form')) {
@@ -464,8 +467,10 @@ window.addEventListener('DOMContentLoaded', () => {
 
         };
 
-        connect.addEventListener('click', connectValidator);
+        connect.addEventListener('click', fieldValidator);
+        mainForm.addEventListener('click', fieldValidator);
+        popup.addEventListener('click', fieldValidator);
     };
 
-    connectValidation();
+    validation();
 });

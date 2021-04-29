@@ -479,4 +479,17 @@ window.addEventListener('DOMContentLoaded', () => {
     };
 
     validation();
+
+    // calculator
+
+    const calculator = () => {
+        const calcBlock = document.querySelector('.calc-block'),
+            calcType = document.querySelector('.calc-type'),
+            calcSquare = document.querySelector('.calc-square'),
+            calcCount = document.querySelector('.calc-count'),
+            calcDay = document.querySelector('.calc-day');
+    };
+
+    calculator();
+
 });

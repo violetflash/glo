@@ -509,15 +509,18 @@ window.addEventListener('DOMContentLoaded', () => {
             }
 
             if (typeValue && squareValue) {
-                total = price * (typeValue / 100) * squareValue * countValue * dayValue;
+                total = Math.trunc(price * (typeValue / 100) * squareValue * countValue * dayValue);
+                console.log(total);
             }
 
             function tick(total) {
-                totalValue.textContent = parseInt(value);
+                totalValue.textContent = value;
 
-                value += total / 100;
+
+                value += Math.trunc(total / 100);
                 if (value > total) {
                     clearInterval(startInterval);
+                    console.log(value);
                 }
             }
 

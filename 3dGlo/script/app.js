@@ -523,12 +523,14 @@ window.addEventListener('DOMContentLoaded', () => {
                     obj.innerHTML = Math.floor(progress * (end - start) + start);
                     if (progress < 1) {
                         window.requestAnimationFrame(step);
+                    } else {
+                        value = total;
                     }
                 };
                 window.requestAnimationFrame(step);
             }
 
-            animateValue(totalValue, 0, total, 100);
+            animateValue(totalValue, value, total, 100);
 
 
         };

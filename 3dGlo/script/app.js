@@ -383,8 +383,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
         const calcValidator = e => {
             const target = e.target;
-
-            if (target.tagName !== 'INPUT' && !target.classList.contains('calc-item')) {
+            if (target.tagName !== 'INPUT' && !target.classList.contains('calc-item') || target.tagName === 'SELECT') {
                 return;
             }
 
@@ -509,8 +508,7 @@ window.addEventListener('DOMContentLoaded', () => {
             }
 
             if (typeValue && squareValue) {
-                total = Math.trunc(price * (typeValue / 100) * squareValue * countValue * dayValue);
-
+                total = Math.trunc(price * typeValue * squareValue * countValue * dayValue);
             }
 
             function tick(total) {

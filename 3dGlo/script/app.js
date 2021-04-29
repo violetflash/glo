@@ -514,7 +514,6 @@ window.addEventListener('DOMContentLoaded', () => {
 
             function tick(total) {
                 totalValue.textContent = parseInt(value);
-                totalValue.textContent = totalValue.textContent.replace('');
 
                 value += total / 100;
                 if (value > total) {

@@ -509,20 +509,28 @@ window.addEventListener('DOMContentLoaded', () => {
 
             if (typeValue && squareValue) {
                 total = Math.trunc(price * typeValue * squareValue * countValue * dayValue);
+                total = Math.ceil(total / 10) * 10;
+                // value = total;
             }
 
-            function tick(total) {
-                totalValue.textContent = value;
-
-                value += Math.trunc(total / 100);
-                if (value > total) {
-                    clearInterval(startInterval);
-                }
+            function animateValue(obj, start, end, duration) {
+                let startTimestamp = null;
+                const step = (timestamp) => {
+                    if (!startTimestamp) {
+                        startTimestamp = timestamp;
+                    }
+                    const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                    obj.innerHTML = Math.floor(progress * (end - start) + start);
+                    if (progress < 1) {
+                        window.requestAnimationFrame(step);
+                    }
+                };
+                window.requestAnimationFrame(step);
             }
 
-            if (total) {
-                startInterval = setInterval(tick.bind(null, total), 1);
-            }
+            animateValue(totalValue, 0, total, 100);
+
+
         };
 
         calcBlock.addEventListener('change', e => {

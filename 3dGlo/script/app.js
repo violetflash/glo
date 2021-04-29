@@ -491,11 +491,12 @@ window.addEventListener('DOMContentLoaded', () => {
         const countSum = () => {
             let total = 0,
                 countValue = 1,
-                dayValue = 1;
+                dayValue = 1,
+                value = 0,
+                startInterval;
 
             const typeValue = calcType.value,
                 squareValue = +calcSquare.value;
-
 
             if (calcCount.value > 1) {
                 countValue += (calcCount.value - 1) / 10;
@@ -508,26 +509,13 @@ window.addEventListener('DOMContentLoaded', () => {
             }
 
             if (typeValue && squareValue) {
-                total = parseInt(price * (typeValue / 100) * squareValue * countValue * dayValue);
+                total = price * (typeValue / 100) * squareValue * countValue * dayValue;
             }
-
-            let value = 0;
-            let startInterval;
-
-            const debounce = (delay = 1000) => {
-                let timeoutId;
-
-                return () => {
-                    if (timeoutId) {
-                        clearTimeout(timeoutId);
-                    }
-                    timeoutId = setTimeout(() => {
-                    }, delay);
-                };
-            };
 
             function tick(total) {
                 totalValue.textContent = parseInt(value);
+                totalValue.textContent = totalValue.textContent.replace('');
+
                 value += total / 100;
                 if (value > total) {
                     clearInterval(startInterval);
@@ -536,7 +524,6 @@ window.addEventListener('DOMContentLoaded', () => {
 
             if (total) {
                 startInterval = setInterval(tick.bind(null, total), 1);
-                debounce();
             }
         };
 

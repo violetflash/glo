@@ -17,14 +17,14 @@ script1();
 // из двух цифр, пример: 09:00. заключить найденное время в тег <b></b>
 const script2 = () => {
     const task2 = document.getElementById('task2');
-    task2.innerHTML = task2.innerHTML.replace(/(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]/g, (match) => `<b>${match}</b>`);
+    task2.innerHTML = task2.innerHTML.replace(/(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]/g, match => `<b>${match}</b>`);
 };
 
 script2();
 
 // 3. Создать запрос во всем документе найти текст в кавычках и заключить его в теги <mark></mark>
 const script3 = () => { //TODO убрать пробел перед открывающимися кавычками
-    document.body.innerHTML = document.body.innerHTML.replace(/\s['"«].*?['"»]/g, (match) => `<mark>${match}</mark>`);
+    document.body.innerHTML = document.body.innerHTML.replace(/(?<!\S)[«'"].*?['"»]/g, match => `<mark>${match}</mark>`);
 };
 
 script3();

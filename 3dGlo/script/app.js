@@ -482,14 +482,75 @@ window.addEventListener('DOMContentLoaded', () => {
 
     // calculator
 
-    const calculator = () => {
+    const calc = (price = 100) => {
         const calcBlock = document.querySelector('.calc-block'),
             calcType = document.querySelector('.calc-type'),
             calcSquare = document.querySelector('.calc-square'),
             calcCount = document.querySelector('.calc-count'),
-            calcDay = document.querySelector('.calc-day');
+            calcDay = document.querySelector('.calc-day'),
+            totalValue = document.getElementById('total');
+
+        const countSum = () => {
+            let total = 0,
+                countValue = 1,
+                dayValue = 1;
+
+            const typeValue = calcType.value,
+                squareValue = +calcSquare.value;
+
+
+            if (calcCount.value > 1) {
+                countValue += (calcCount.value - 1) / 10;
+            }
+
+            if (calcDay.value && calcDay.value < 5) {
+                dayValue *= 2;
+            } else if (calcDay.value && calcDay.value < 10) {
+                dayValue *= 1.5;
+            }
+
+            if (typeValue && squareValue) {
+                total = parseInt(price * (typeValue / 100) * squareValue * countValue * dayValue);
+            }
+
+            let value = 0;
+            let startInterval;
+
+            const debounce = (delay = 1000) => {
+                let timeoutId;
+
+                return () => {
+                    if (timeoutId) {
+                        clearTimeout(timeoutId);
+                    }
+                    timeoutId = setTimeout(() => {
+                    }, delay);
+                };
+            };
+
+            function tick(total) {
+                totalValue.textContent = parseInt(value);
+                value += total / 100;
+                if (value > total) {
+                    clearInterval(startInterval);
+                }
+            }
+
+            if (total) {
+                startInterval = setInterval(tick.bind(null, total), 1);
+                debounce();
+            }
+        };
+
+        calcBlock.addEventListener('change', e => {
+            const target = e.target;
+
+            if (target.matches('select') || target.matches('input')) {
+                countSum();
+            }
+        });
     };
 
-    calculator();
+    calc(100);
 
 });

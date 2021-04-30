@@ -24,6 +24,7 @@ class Validator {
             console.log('отправлено');
         });
         console.log(this.form, 'Подключено');
+        console.log(this.elementsForm);
     }
 
     isValid(elem) {
@@ -38,7 +39,6 @@ class Validator {
 
         if (this.method) {
             const method = this.method[elem.id];
-            console.log(method);
 
             if (method) {
                 return method.every(item => validatorMethod[item[0]](elem, this.pattern[item[1]]));

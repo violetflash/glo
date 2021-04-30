@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        input {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <form id="myform">
+        <div><label for="phone">phone</label>
+            <input type="text" id="phone" name="phone" placeholder="phone" autocomplete="off">
+        </div>
+        <br>
+        <div><label for="email">email</label>
+            <input type="text" id="email" name="email" placeholder="email" autocomplete="off">
+        </div>
+        <br>
+        <button type="reset">submit</button>
+        <button type="submit">reset</button>
+    </form>
+
+    <script src="validator.js"></script>
+</body>
+
+<script>
+    const valid = new Validator({
+        selector: ['#form1', '#form2', '#form3'],
+        pattern: {
+            phone: /^\+380\d{7}$/,
+            zip: /\d{5,6}/
+        },
+        method: {
+            'phone': [
+                ['notEmpty'],
+                ['pattern', 'phone']
+            ],
+            'email': [
+                ['notEmpty'],
+                ['pattern', 'email']
+            ]
+        },
+    })
+
+    valid.init();
+</script>
+</html>

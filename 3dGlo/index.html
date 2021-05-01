@@ -71,14 +71,14 @@
                 <div class="row">
                     <div class="col-12 col-lg-4">
                         <input type="text" class="form-name" id="form1-name" name="user_name" placeholder="Ваше имя"
-                               required>
+                               >
                     </div>
                     <div class="col-12 col-lg-4">
                         <input type="email" class="form-email" id="form1-email" name="user_email" placeholder="E-mail">
                     </div>
                     <div class="col-12 col-lg-4">
                         <input type="tel" class="form-phone" id="form1-phone" name="user_phone"
-                               placeholder="Номер телефона" required>
+                               placeholder="Номер телефона" >
                     </div>
                 </div>
             </div>
@@ -423,45 +423,44 @@
                 text: /^[а-яА-Я]+$/,
             },
             method: {
-                'name': [
+                'form1-name': [
                     ['notEmpty'],
-                    ['pattern', 'form1-name']
+                    ['pattern', 'text']
                 ]
             }
         });
         valid1.init();
-        // const valid2 = new Validator({
-        //     selector: '#form2',
-        //     pattern: {
-        //         text: /^[а-яА-Я]+$/,
-        //     },
-        //     method: {
-        //         'name': [
-        //             ['notEmpty'],
-        //             ['pattern', 'form2-name'],
-        //             ['pattern', 'form2-message'],
-        //         ],
-        //         'message': [
-        //             ['notEmpty'],
-        //             ['pattern', 'form2-message'],
-        //         ]
-        //     }
-        // });
-        // valid2.init();
-        //
-        // const valid3 = new Validator({
-        //     selector: '#form3',
-        //     pattern: {
-        //         text: /^[а-яА-Я]+$/,
-        //     },
-        //     method: {
-        //         'name': [
-        //             ['notEmpty'],
-        //             ['pattern', 'form3-name']
-        //         ]
-        //     }
-        // });
-        // valid3.init();
+        const valid2 = new Validator({
+            selector: '#form2',
+            pattern: {
+                text: /^[а-яА-Я]+$/,
+            },
+            method: {
+                'form2-name': [
+                    ['notEmpty'],
+                    ['pattern', 'text'],
+                ],
+                'form2-message': [
+                    ['notEmpty'],
+                    ['pattern', 'text'],
+                ]
+            }
+        });
+        valid2.init();
+
+        const valid3 = new Validator({
+            selector: '#form3',
+            pattern: {
+                text: /^[а-яА-Я]+$/,
+            },
+            method: {
+                'form3-name': [
+                    ['notEmpty'],
+                    ['pattern', 'text']
+                ]
+            }
+        });
+        valid3.init();
     </script>
 </body>
 </html>

@@ -181,7 +181,7 @@ body .main-form input {
   height: 5rem;
   border-radius: 5rem;
   font-size: 1.3rem;
-  /*border: none;*/
+  border: none;
   padding-left: 2.7rem;
   color: #000
 }
@@ -682,7 +682,7 @@ main a {
   height: 4.9rem;
   border-radius: .7rem;
   font-size: 1.3rem;
-  /*border: none;*/
+  border: none;
   padding-left: 1.7rem;
   color: #000
 }
@@ -691,7 +691,7 @@ main a {
   width: 100%;
   border-radius: 1rem;
   font-size: 1.3rem;
-  /*border: none;*/
+  border: none;
   padding-top: 1rem;
   padding-left: 1.7rem;
   padding-bottom: 6rem;

@@ -397,8 +397,12 @@ window.addEventListener('DOMContentLoaded', () => {
 
     //CONNECT SECTION VALIDATION
 
-    const textValidator = function() {
-        this.value = this.value.replace(/[^а-яА-Я -]/g, '');
+    const nameValidator = function() {
+        this.value = this.value.replace(/[^а-яА-Я ]/g, '');
+    };
+
+    const messageValidator = function() {
+        this.value = this.value.replace(/[^а-яА-Я\d .,:()?!_-]/g, '');
     };
 
     const emailValidator = function() {
@@ -406,7 +410,7 @@ window.addEventListener('DOMContentLoaded', () => {
     };
 
     const phoneValidator = function() {
-        this.value = this.value.replace(/[^\d()-]/g, '');
+        this.value = this.value.replace(/[^\d+]/g, '');
     };
 
 
@@ -453,8 +457,12 @@ window.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            if (target.name === 'user_name' || target.name === 'user_message') {
-                target.addEventListener('input', textValidator);
+            if (target.name === 'user_name') {
+                target.addEventListener('input', nameValidator);
+            }
+
+            if (target.name === 'user_message') {
+                target.addEventListener('input', messageValidator);
             }
 
             if (target.name === 'user_email') {
@@ -469,8 +477,8 @@ window.addEventListener('DOMContentLoaded', () => {
             target.addEventListener('blur', checkWholeValidation);
         };
 
-        connect.addEventListener('click', fieldValidator);
         mainForm.addEventListener('click', fieldValidator);
+        connect.addEventListener('click', fieldValidator);
         popup.addEventListener('click', fieldValidator);
     };
 
@@ -544,5 +552,133 @@ window.addEventListener('DOMContentLoaded', () => {
     };
 
     calc(100);
+
+
+    //send-ajax-form
+
+    const createLoadingAnimation = () => {
+        const styleSheet = document.createElement("style");
+        styleSheet.innerText = `
+            .loading {
+                flex: 1 1 25%;  
+            }
+            .sk-wandering-cubes {
+                width: 4em;
+                height: 4em;
+                position: relative;
+                margin: auto;
+            }
+            .sk-wandering-cubes .sk-cube {
+                background-color: #19b5fe;
+                width: 1.5em;
+                height: 1.5em;
+                position: absolute;
+                top: 0;
+                left: 0;
+                animation: sk-wandering-cubes 1.8s ease-in-out -1.8s infinite both;
+            }
+            .sk-wandering-cubes .sk-cube-2 {
+                animation-delay: -0.9s;
+            }
+            @keyframes sk-wandering-cubes {
+                0% {
+                    transform: rotate(0deg);
+                }
+                25% {
+                    transform: translateX(2em) rotate(-90deg) scale(0.5);
+                }
+                50% {
+                    /* Hack to make FF rotate in the right direction */
+                    transform: translateX(2em) translateY(2em) rotate(-179deg);
+                }
+                50.1% {
+                    transform: translateX(2em) translateY(2em) rotate(-180deg);
+                }
+                75% {
+                    transform: translateX(0) translateY(2em) rotate(-270deg) scale(0.5);
+                }
+                100% {
+                    transform: rotate(-360deg);
+                }
+            }
+        `;
+        document.head.appendChild(styleSheet);
+
+        return `
+            <section class="loading">
+                <div class="sk-wandering-cubes">
+                    <div class="sk-cube sk-cube-1"></div> 
+                    <div class="sk-cube sk-cube-2"></div>
+                </div>
+            </section>
+        `;
+    };
+
+    const sendForm = () => {
+        const errorMessage = 'Что-то пошло не так...',
+            successMessage = 'Спасибо! Мы скоро с вами свяжемся!',
+            loadMessage = createLoadingAnimation();
+
+
+        const forms = document.querySelectorAll('form');
+        const statusMessage = document.createElement('div');
+        statusMessage.style.cssText = 'font-size: 2rem; color: #19b5fe;';
+
+        forms.forEach((form) => {
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+                form.append(statusMessage);
+
+                statusMessage.innerHTML = loadMessage;
+
+                const formData = new FormData(form);
+                let body = {};
+                // for (const val of formData.entries()) {
+                //     body[val[0]] = val[1];
+                // }
+                formData.forEach((val, key) => {
+                    body[key] = val;
+                });
+                postData(form, body,
+                    () => {
+                        statusMessage.textContent = successMessage;},
+                    (error) => {
+                        console.error(error);
+                        statusMessage.textContent = errorMessage;
+                    });
+            });
+        });
+
+
+        const postData = (form, obj, successData, errorData) => {
+            const request = new XMLHttpRequest();
+            request.addEventListener('readystatechange', () => {
+
+                if (request.readyState !== 4) return;
+                if (request.status === 200) {
+                    successData();
+                    clearForm(form);
+                } else {
+                    errorData(request.status);
+                }
+            });
+            request.open('POST', './server.php');
+            request.setRequestHeader('Content-Type', 'application/json');
+            request.send(JSON.stringify(obj));
+        };
+
+        const clearForm = (form) => {
+            const inputs = form.querySelectorAll('input');
+            inputs.forEach((element) => {
+                if (element.type.toLowerCase() === 'button') return;
+                element.value = '';
+            });
+
+        };
+    };
+
+    sendForm();
+
+
 
 });

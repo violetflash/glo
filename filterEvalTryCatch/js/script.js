@@ -30,32 +30,47 @@ const filterByType = (type, ...values) => values.filter(value => typeof value ==
 	//определение функции показа сообщения по-умолчанию - без поиска совпадений
 	showNoResults = () => showResponseBlock('.dialog__response-block_no-results'),
 
-
+	//функция фильтрации с оберткой tey catch для
 	tryFilterByType = (type, values) => {
 		try {
-			//получаем сумму однотипных элементов
+			//получает строку из массива однотипных элементов без преобразования типов
 			const valuesArray = eval(`filterByType('${type}', ${values})`).join(", ");
+			//создание информационного сообщения
 			const alertMsg = (valuesArray.length) ?
+				//если выбранный тип данных присутствует
 				`Данные с типом ${type}: ${valuesArray}` :
+				//если выбранный тип данных отсутствует
 				`Отсутствуют данные типа ${type}`;
+			//Отображает результат
 			showResults(alertMsg);
 		} catch (e) {
+			//Или отображает ошибку
 			showError(`Ошибка: ${e}`);
 		}
 	};
 
+//получение элемента кнопки
 const filterButton = document.querySelector('#filter-btn');
 
+//навешивание события клик на элемент
 filterButton.addEventListener('click', e => {
+	//получение элемента селекта с выбором типа
 	const typeInput = document.querySelector('#type');
+	//получение элемента инпута, куда будут вводиться фильтруемые данные
 	const dataInput = document.querySelector('#data');
 
+	//проверка на пустой инпут
 	if (dataInput.value === '') {
+		//вывод кастомного поля с сообщением об ошибке
 		dataInput.setCustomValidity('Поле не должно быть пустым!');
+		//отображение изначального состояния информационного блока
 		showNoResults();
 	} else {
+		//инпут не пустой - ошибки нет
 		dataInput.setCustomValidity('');
+		//предотвращение дефолтного события отправки формы и перезагрузки страницы
 		e.preventDefault();
+		//вызов функции фильтрации
 		tryFilterByType(typeInput.value.trim(), dataInput.value.trim());
 	}
 });

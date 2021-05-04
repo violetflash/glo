@@ -17,7 +17,7 @@ window.addEventListener('DOMContentLoaded', () => {
                 seconds = timeRemaining > 0 ? Math.floor(timeRemaining % 60) : 0,
                 minutes = timeRemaining > 0 ? Math.floor(timeRemaining / 60 % 60) : 0,
                 hours = timeRemaining > 0 ? Math.floor(timeRemaining / 3600 % 24) : 0;
-            return { timeRemaining, hours, minutes, seconds };
+            return {timeRemaining, hours, minutes, seconds};
         }
 
         function checkZero(num) {
@@ -72,7 +72,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
     toggleMenu();
 
-    function animate({ timing, draw, duration }) {
+    function animate({timing, draw, duration}) {
         const start = performance.now();
         requestAnimationFrame(function animate(time) {
             // timeFraction изменяется от 0 до 1
@@ -162,7 +162,7 @@ window.addEventListener('DOMContentLoaded', () => {
             menuLinks = menu.querySelectorAll('li > a');
 
         function scroll(e) {
-            e.scrollIntoView({ behavior: "smooth", block: "start" });
+            e.scrollIntoView({behavior: "smooth", block: "start"});
         }
 
         [...menuLinks, scrollBtn].forEach((elem) => {
@@ -639,10 +639,11 @@ window.addEventListener('DOMContentLoaded', () => {
                 formData.forEach((val, key) => {
                     body[key] = val;
                 });
-                postData(form, body,
-                    () => {
-                        statusMessage.textContent = successMessage;},
-                    (error) => {
+                postData(form, body)
+                    .then(() => {
+                        statusMessage.textContent = successMessage;
+                    })
+                    .catch((error) => {
                         console.error(error);
                         statusMessage.textContent = errorMessage;
                     });
@@ -650,21 +651,24 @@ window.addEventListener('DOMContentLoaded', () => {
         });
 
 
-        const postData = (form, obj, successData, errorData) => {
-            const request = new XMLHttpRequest();
-            request.addEventListener('readystatechange', () => {
+        const postData = (form, obj) => {
+            return new Promise((resolve, reject) => {
+                const request = new XMLHttpRequest();
+                request.addEventListener('readystatechange', () => {
 
-                if (request.readyState !== 4) return;
-                if (request.status === 200) {
-                    successData();
-                    clearForm(form);
-                } else {
-                    errorData(request.status);
-                }
+                    if (request.readyState !== 4) return;
+                    if (request.status === 200) {
+                        resolve();
+                        clearForm(form);
+                    } else {
+                        reject(request.status);
+                    }
+                });
+                request.open('POST', './server.php');
+                request.setRequestHeader('Content-Type', 'application/json');
+                request.send(JSON.stringify(obj));
             });
-            request.open('POST', './server.php');
-            request.setRequestHeader('Content-Type', 'application/json');
-            request.send(JSON.stringify(obj));
+
         };
 
         const clearForm = (form) => {
@@ -678,7 +682,6 @@ window.addEventListener('DOMContentLoaded', () => {
     };
 
     sendForm();
-
 
 
 });

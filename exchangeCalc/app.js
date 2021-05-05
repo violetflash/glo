@@ -112,7 +112,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 this.setStrFrom();
                 this.setStrTo();
                 this.setQueryString();
-                if (this.strAmount) this.fetchData();
+                if (this.strAmount) {
+                    this.output.innerHTML = this.createLoadingAnimation();
+                    this.fetchData();
+                }
             });
 
             this.calcBtn.addEventListener('click', (e) => {

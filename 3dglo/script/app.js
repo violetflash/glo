@@ -411,7 +411,8 @@ window.addEventListener('DOMContentLoaded', () => {
     };
 
     const phoneValidator = function() {
-        this.value = this.value.replace(/[^\d+]/g, '');
+        this.value = this.value.replace(/[^\d+]/g, '').replace(/(?<=(.{12})).+/g, '');
+
     };
 
 
@@ -429,6 +430,13 @@ window.addEventListener('DOMContentLoaded', () => {
 
             if (this.value.length === 1) {
                 this.value = '';
+            }
+
+            if (this.name === 'user_phone') {
+                console.log('phone')
+                if (this.value.length < 7) {
+                    this.value = '';
+                }
             }
 
 
@@ -546,6 +554,25 @@ window.addEventListener('DOMContentLoaded', () => {
 
     //send-ajax-form
 
+    //remove required attr from inputs
+    const removeRequiredAttr = () => {
+        const forms = document.querySelectorAll('form');
+        forms.forEach((form) => {
+            const inputs = form.querySelectorAll('input');
+            inputs.forEach((element) => {
+                if (element.type.toLowerCase() === 'button') return;
+                console.log('required removed');
+                element.required = false;
+            });
+            const statusMessage = document.createElement('div');
+            statusMessage.classList.add('status-message');
+            statusMessage.style.cssText = 'font-size: 2rem;padding: 20px 0;';
+            form.append(statusMessage);
+        });
+    };
+
+    removeRequiredAttr();
+
     const createLoadingAnimation = () => {
         const styleSheet = document.createElement("style");
         styleSheet.innerText = `
@@ -606,19 +633,40 @@ window.addEventListener('DOMContentLoaded', () => {
 
     const sendForm = () => {
         const errorMessage = 'Что-то пошло не так...',
+            emptyMessage = 'Надо заполнить ВСЕ поля!',
             successMessage = 'Спасибо! Мы скоро с вами свяжемся!',
             loadMessage = createLoadingAnimation();
 
+        const checkFormInputs = (form) => {
+            const inputs = form.querySelectorAll('input');
+            let result = true;
+            inputs.forEach((element) => {
+                if (element.type.toLowerCase() === 'button') return;
+                if (!element.value) {
+                    result = false;
+                }
+            });
+            return result;
+        };
+
 
         const forms = document.querySelectorAll('form');
-        const statusMessage = document.createElement('div');
-        statusMessage.style.cssText = 'font-size: 2rem; color: #19b5fe;';
+
+
 
         forms.forEach((form) => {
             form.addEventListener('submit', (e) => {
                 e.preventDefault();
-                form.append(statusMessage);
 
+                const statusMessage = form.querySelector('.status-message');
+                //проверка на пустые инпуты
+                if (!checkFormInputs(form)) {
+                    statusMessage.style.cssText = 'font-size: 2rem; color: red;padding: 20px 0;';
+                    statusMessage.innerHTML = emptyMessage;
+                    return;
+                }
+
+                statusMessage.style.cssText = 'font-size: 2rem; color: #19b5fe;padding: 20px 0;';
                 statusMessage.innerHTML = loadMessage;
 
                 const formData = new FormData(form);

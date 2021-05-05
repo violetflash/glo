@@ -395,7 +395,8 @@ window.addEventListener('DOMContentLoaded', () => {
 
     validateCalc();
 
-    //CONNECT SECTION VALIDATION
+
+    //FORMS VALIDATION
 
     const nameValidator = function() {
         this.value = this.value.replace(/[^а-яА-Я ]/g, '');
@@ -420,18 +421,7 @@ window.addEventListener('DOMContentLoaded', () => {
             popup = document.querySelector('.popup');
 
 
-        /*
-        Должны удаляться все символы, кроме допустимых
-        Несколько идущих подряд пробелов или дефисов должны заменяться на один.
-        Пробелы и дефисы в начале и конце значения должны удаляться.
-        Для поля "Ваше имя" Первая буква каждого слова должна приводиться к
-        верхнему регистру, а все остальные — к нижнему.
-         */
-        //TODO БАГ - с имейлом
         const checkWholeValidation = function() {
-            // let trimmedValue = this.value;
-            // this.value = '';
-            // this.value = trimmedValue;
 
             this.value = this.value.replace(/\s+/g, ' ')
                 .replace(/-+/g, '-')
@@ -639,9 +629,11 @@ window.addEventListener('DOMContentLoaded', () => {
                 formData.forEach((val, key) => {
                     body[key] = val;
                 });
-                postData(form, body)
-                    .then(() => {
+                postData(body)
+                    .then((response) => {
+                        if (response.status !== 200) throw new Error('Нет ответа ответа сервера');
                         statusMessage.textContent = successMessage;
+                        clearForm(form);
                     })
                     .catch((error) => {
                         console.error(error);
@@ -651,24 +643,12 @@ window.addEventListener('DOMContentLoaded', () => {
         });
 
 
-        const postData = (form, obj) => {
-            return new Promise((resolve, reject) => {
-                const request = new XMLHttpRequest();
-                request.addEventListener('readystatechange', () => {
-
-                    if (request.readyState !== 4) return;
-                    if (request.status === 200) {
-                        resolve();
-                        clearForm(form);
-                    } else {
-                        reject(request.status);
-                    }
-                });
-                request.open('POST', './server.php');
-                request.setRequestHeader('Content-Type', 'application/json');
-                request.send(JSON.stringify(obj));
+        const postData = (obj) => {
+            return fetch('./server.php', {
+                method: 'POST',
+                headers: {'Content-type': 'application/json'},
+                body: JSON.stringify(obj),
             });
-
         };
 
         const clearForm = (form) => {
@@ -682,6 +662,5 @@ window.addEventListener('DOMContentLoaded', () => {
     };
 
     sendForm();
-
 
 });

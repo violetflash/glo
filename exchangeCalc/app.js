@@ -2,29 +2,30 @@ document.addEventListener('DOMContentLoaded', () => {
     'use strict';
 
     class ExchangeCalc {
-        constructor({form, amount, amountLabel, currFrom, currTo, result, calcBtn, switchBtn, baseURL}) {
+        constructor({form, amount, amountLabel, currFrom, currTo, output, calcBtn, switchBtn, baseURL, apiKey}) {
             this.form = form;
             this.amount = amount;
             this.amountLabel = amountLabel;
             this.currFrom = currFrom;
             this.currTo = currTo;
-            this.result = result;
+            this.output = output;
             this.calcBtn = calcBtn;
             this.switchBtn = switchBtn;
             this.baseURL = baseURL;
-            this.requestString = '';
+            this.apiKey = apiKey;
+            this.queryString = '';
             this.strFrom = this.currFrom.value;
             this.strTo = this.currTo.value;
             this.strAmount = '';
+
         }
 
         syncDataAttr() {
             this.amountLabel.dataset.symbol = this.currFrom.options[this.currFrom.selectedIndex].dataset.symbol;
         }
 
-        setRequestString() {
-            this.requestString = `${this.baseURL}&from=${this.strFrom}&to=${this.strTo}&amount=${this.strAmount}`;
-            console.log(this.requestString);
+        setQueryString() {
+            this.queryString = `${this.baseURL}q=${this.strFrom}_${this.strTo}&compact=ultra&${this.apiKey}`;
         }
 
         setStrFrom() {
@@ -35,26 +36,71 @@ document.addEventListener('DOMContentLoaded', () => {
             this.strTo = this.currTo.value;
         }
 
+        setStrAmount() {
+            this.strAmount = this.amount.value;
+        }
+
+        createLoadingAnimation() {
+            const styleSheet = document.createElement("style");
+            styleSheet.innerText = `
+            .loading {
+                flex: 1 1 25%;  
+            }
+            .sk-spinner-pulse {
+              width: 4em;
+              height: 4em;
+              margin: auto;
+              background-color: #337ab7;
+              border-radius: 100%;
+              animation: sk-spinner-pulse 1s infinite ease-in-out;
+            }
+            @keyframes sk-spinner-pulse {
+              0% {
+                  transform: scale(0);
+              }
+              100% {
+                  transform: scale(1);
+                  opacity: 0;
+              }
+            }
+            `;
+            document.head.appendChild(styleSheet);
+
+            return `
+                <div class="loading">
+                    <div class="sk-spinner sk-spinner-pulse"></div>
+                </div>
+                                
+<!--            <div class="loading">-->
+<!--                <div class="sk-wandering-cubes">-->
+<!--                    <div class="sk-cube sk-cube-1"></div> -->
+<!--                    <div class="sk-cube sk-cube-2"></div>-->
+<!--                </div>-->
+<!--            </div>-->
+            `;
+        }
+
         eventListeners() {
             this.amount.addEventListener('input', () => {
                 this.amount.value = this.amount.value.replace(/[^\d.]/, '');
-                this.strAmount = this.amount.value;
-                this.setRequestString();
+                this.setStrAmount();
+                this.setQueryString();
             });
             this.amount.addEventListener('blur', () => {
-                //TODO отсекать цифры после первой точки
+                this.amount.value = this.amount.value.replace(/(?<=(\...)).+/, '');
+                this.setStrAmount();
             });
 
             const handleFromSelect = () => {
                 this.setStrFrom();
-                this.setRequestString();
+                this.setQueryString();
                 this.syncDataAttr();
             };
             this.currFrom.addEventListener('change', handleFromSelect);
 
             const handleToSelect = () => {
                 this.setStrTo();
-                this.setRequestString();
+                this.setQueryString();
             };
             this.currTo.addEventListener('change', handleToSelect);
 
@@ -65,29 +111,37 @@ document.addEventListener('DOMContentLoaded', () => {
                 this.syncDataAttr();
                 this.setStrFrom();
                 this.setStrTo();
-                this.setRequestString();
+                this.setQueryString();
+                if (this.strAmount) this.fetchData();
             });
 
             this.calcBtn.addEventListener('click', (e) => {
+                this.output.innerHTML = this.createLoadingAnimation();
                 e.preventDefault();
                 this.fetchData();
             });
         }
 
+        outputResult(res) {
+            this.output.textContent = `${this.amount.value} ${this.currFrom.value} = ${res.toFixed(2)} ${this.currTo.value}`;
+        }
+
+
         fetchData() {
-            console.log(this.requestString);
-            // fetch(this.requestString)
-            //     .then((response) => {
-            //         console.log(response)
-            //         if (response.status !== 200) throw new Error('status code is not 200');
-            //         return response.json()
-            //             .then((data) => {
-            //                 console.log(data);
-            //             });
-            //     })
-            //     .catch((error) => {
-            //         console.error(error);
-            //     });
+            console.log(this.queryString);
+            fetch(this.queryString)
+                .then((response) => {
+                    console.log(response)
+                    if (response.status !== 200) throw new Error('status code is not 200');
+                    return response.json()
+                        .then((data) => {
+                            const result = +this.strAmount * +data[`${this.strFrom}_${this.strTo}`];
+                            this.outputResult(result);
+                        });
+                })
+                .catch((error) => {
+                    console.error(error);
+                });
         }
 
         init() {
@@ -103,11 +157,11 @@ document.addEventListener('DOMContentLoaded', () => {
         amountLabel: document.getElementById('amount-label'),
         currFrom: document.getElementById('currency-from'),
         currTo: document.getElementById('currency-to'),
-        result: document.getElementById('result'),
+        output: document.getElementById('output'),
         calcBtn: document.getElementById('calc-btn'),
         switchBtn: document.getElementById('switch'),
-        baseURL: 'https://api.exchangeratesapi.io/v1/convert?access_key=96262ac2a844c5c5300ad6e2e80a7c8e',
-        symbols: '&symbols=USD,RUB,EUR',
+        baseURL: 'https://free.currconv.com/api/v7/convert?',
+        apiKey: 'apiKey=8c1d6671c887dddb2c0c',
     });
 
     calc.init();

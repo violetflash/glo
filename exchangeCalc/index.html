@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Exchange Calculator</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <form class="calc">
+        <div class="calc__top">
+            <label for="amount">Amount</label>
+            <span id="amount-label"><input id="amount" type="text" autocomplete="off"></span>
+        </div>
+        <div class="calc__middle">
+            <label>FROM:
+                <select name="currency-from" id="currency-from">
+                    <option value="USD" data-symbol="$">USD</option>
+                    <option value="RUB" data-symbol="₽">RUB</option>
+                    <option value="EUR" data-symbol="£">EUR</option>
+                </select>
+            </label>
+
+            <button id="switch" type="button"></button>
+
+            <label>TO:
+                <select name="currency-to" id="currency-to">
+                    <option value="USD" data-symbol="$">USD</option>
+                    <option value="RUB" data-symbol="₽">RUB</option>
+                    <option value="EUR" data-symbol="£">EUR</option>
+                </select>
+            </label>
+        </div>
+        <div class="calc__bottom">
+            <button id="calc-btn" type="submit">Calculate</button>
+            <div id="result">
+                Lorem ipsum dolor sit amet, consectetur adipisicing elit. A cum explicabo quam tempora! Ad aliquam commodi dignissimos eum eveniet expedita illo nemo, obcaecati pariatur quaerat, quod sint temporibus veniam vitae.
+            </div>
+        </div>
+
+
+    </form>
+    <script src="app.js"></script>
+</body>
+</html>

@@ -464,7 +464,7 @@ window.addEventListener('DOMContentLoaded', () => {
             }
 
             if (target.name === 'user_email') {
-                target.type = 'text';
+                // target.type = 'text';
                 target.addEventListener('input', emailValidator);
             }
 

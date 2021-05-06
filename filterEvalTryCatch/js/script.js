@@ -23,18 +23,19 @@ const filterByType = (type, ...values) => values.filter(value => typeof value ==
 			document.querySelector(spanSelector).textContent = msgText;
 		}
 	},
-	//определение функции показа ошибки
+	//показ ошибки
 	showError = msgText => showResponseBlock('.dialog__response-block_error', msgText, '#error'),
-	//определение функции показа положительного результата
+	//показ положительного результата
 	showResults = msgText => showResponseBlock('.dialog__response-block_ok', msgText, '#ok'),
-	//определение функции показа сообщения по-умолчанию - без поиска совпадений
+	//показ сообщения по-умолчанию - без поиска совпадений
 	showNoResults = () => showResponseBlock('.dialog__response-block_no-results'),
 
 
 	tryFilterByType = (type, values) => {
 		try {
-			//получаем сумму однотипных элементов
+			//получаем  однотипные элементы без преобразования
 			const valuesArray = eval(`filterByType('${type}', ${values})`).join(", ");
+			// формируется вывод результата
 			const alertMsg = (valuesArray.length) ?
 				`Данные с типом ${type}: ${valuesArray}` :
 				`Отсутствуют данные типа ${type}`;

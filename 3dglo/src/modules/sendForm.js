@@ -40,12 +40,14 @@ const sendForm = () => {
 
             const formData = new FormData(form);
             let body = {};
-            // for (const val of formData.entries()) {
-            //     body[val[0]] = val[1];
-            // }
+            // // for (const val of formData.entries()) {
+            // //     body[val[0]] = val[1];
+            // // }
             formData.forEach((val, key) => {
                 body[key] = val;
             });
+            body = JSON.stringify(body);
+            console.log(body);
             postData(body)
                 .then((response) => {
                     if (response.status !== 200) throw new Error('Нет ответа ответа сервера');
@@ -60,11 +62,14 @@ const sendForm = () => {
     });
 
 
-    const postData = (obj) => {
+    const postData = (body) => {
         return fetch('./server.php', {
             method: 'POST',
-            headers: {'Content-type': 'application/json'},
-            body: JSON.stringify(obj),
+            credentials: 'same-origin',
+            body: JSON.stringify(body),
+            headers: {
+                'Content-type': 'application/json'
+            },
         });
     };
 

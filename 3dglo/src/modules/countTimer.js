@@ -1,5 +1,3 @@
-import animate from "./animate";
-
 function countTimer(deadline) {
     const timerHours = document.querySelector('#timer-hours'),
         timerMinutes = document.querySelector('#timer-minutes'),

@@ -138,8 +138,7 @@ body .main .input-cities label {
 }
 
 .dropdown-lists__list--default.d-none {
-    transition: all 0.3s ease-in-out;
-    max-height: 0;
+    /*max-height: 0;*/
     display: none;
 }
 

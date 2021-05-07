@@ -130,10 +130,45 @@ body .main .input-cities label {
 
 .dropdown-lists__list {
     width: 100%;
+ }
+
+.dropdown-lists__list--default {
+    transition: all 0.3s ease-in-out;
+    max-height: 0;
 }
 
-.dropdown-lists__list--select {
+.dropdown-lists__list--default.d-none {
+    transition: all 0.3s ease-in-out;
+    max-height: 0;
     display: none;
+}
+
+.dropdown-lists__list--default.js-moved-off {
+    animation: move100pLeft 0.4s;
+}
+
+
+/*@keyframes move100pLeft {*/
+/*    0% {*/
+/*        opacity: 1;*/
+/*        transform: translateX(0);*/
+/*    }*/
+/*    100% {*/
+/*        opacity: 0.3;*/
+/*        transform: translateX(-100%);*/
+/*    }*/
+/*}*/
+
+.dropdown-lists__list--select {
+    /*transform: translateX(100%);*/
+    /*opacity: 0;*/
+    display: none;
+}
+
+.dropdown-lists__list--select.d-block {
+    /*transform: translateX(100%);*/
+    /*opacity: 0;*/
+    display: block;
 }
 
 .dropdown-lists__list--autocomplete {

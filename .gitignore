@@ -7,4 +7,3 @@ node_modules/
 app/css/
 .vs
 package-lock.json
-dist/

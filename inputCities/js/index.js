@@ -1,10 +1,11 @@
 class CitySearcher {
-    constructor({ db, input, closeBtn, defaultDropdown, selectDropdown, root }) {
+    constructor({ db, input, closeBtn, defaultDropdown, selectDropdown, autocompleteDropdown, root }) {
         this.db = db;
         this.input = input;
         this.closeBtn = closeBtn;
         this.defaultDropdown = defaultDropdown;
         this.selectDropdown = selectDropdown;
+        this.autocompleteDropdown = autocompleteDropdown;
         this.linkBtn = document.querySelector('.button');
         this.label = document.querySelector('.label');
         this.root = root;
@@ -32,54 +33,7 @@ class CitySearcher {
         `;
     }
 
-    // async renderAllCities(country) {
-    //     const response = await (await this.fetchData()).json();
-    //     const target = this.selectDropdown.querySelector('.dropdown-lists__col');
-    //     target.innerHTML = '';
-    //
-    //     for (const responseKey in response) {
-    //         //Отфильтровывание страны
-    //         const countryArray = response[responseKey];
-    //
-    //         countryArray.forEach(elem => {
-    //             elem.cities.sort((a, b) => +a.count - +b.count).reverse();
-    //             if (elem.country !== country) return;
-    //
-    //             target.innerHTML = this.renderCountry(elem.country, elem.count);
-    //
-    //             elem.cities.forEach(city => {
-    //                 target.innerHTML += this.renderCity(city.name, city.count, city.link);
-    //             });
-    //         });
-    //     }
-    // }
-    // async fillDefaultDropdown() {
-    //     const response = await (await this.fetchData()).json();
-    //
-    //     for (const responseKey in response) {
-    //         //Отфильтровывание страны
-    //         // if (responseKey !== 'RU') return;
-    //
-    //         const countryArray = response[responseKey];
-    //
-    //         countryArray.forEach(elem => {
-    //             //заполняем дефолтный блок
-    //             const countryBlock = document.createElement('div');
-    //             countryBlock.classList.add('dropdown-lists__countryBlock');
-    //             countryBlock.innerHTML = this.renderCountry(elem.country, elem.count);
-    //
-    //             elem.cities.sort((a, b) => +a.count - +b.count).reverse();
-    //
-    //             elem.cities.forEach((city, index) => {
-    //                 if (index > 2) return;
-    //                 countryBlock.innerHTML += this.renderCity(city.name, city.count, city.link);
-    //             });
-    //             this.defaultDropdown.querySelector('.dropdown-lists__col').append(countryBlock);
-    //         });
-    //     }
-    // }
-
-    async fillDropdown(dropdown, country) {
+    async fillDropdown(dropdown, country, searchTerm) {
         const response = await (await this.fetchData()).json();
         const target = dropdown.querySelector('.dropdown-lists__col');
 
@@ -111,6 +65,17 @@ class CitySearcher {
                     elem.cities.forEach(city => {
                         target.innerHTML += this.renderCity(city.name, city.count, city.link);
                     });
+
+                }   else if (dropdown === this.autocompleteDropdown) {
+                    target.innerHTML = '';
+                    elem.cities.forEach((city) => {
+                        if (!searchTerm) return;
+                        const regExp = new RegExp(searchTerm, 'g');
+                        if (regExp.test(city.name)) {
+                            target.innerHTML += this.renderCity(city.name, city.count, city.link);
+                            console.log(city.name);
+                        }
+                    });
                 }
             });
         }
@@ -133,15 +98,15 @@ class CitySearcher {
         this.defaultDropdown.classList.remove('d-none');
         document.querySelector('.dropdown').scrollTop = 0;
         this.selectDropdown.classList.remove('d-block');
-        // this.selectDropdown.style.display = 'none';
+        this.autocompleteDropdown.style.display = 'none';
     }
 
     lockLinkButton() {
-        this.linkBtn.disabled = true;
+        this.linkBtn.setAttribute('disabled', 'true');
     }
 
     unlockLinkButton() {
-        this.linkBtn.disabled = false;
+        this.linkBtn.removeAttribute('disabled');
     }
 
     showCloseBtn() {
@@ -166,17 +131,29 @@ class CitySearcher {
 
             if (target === this.input) {
                 this.defaultDropdown.style.maxHeight = this.defaultDropdown.scrollHeight + "px";
+
                 target.addEventListener('input', () => {
                     this.showCloseBtn();
+                    // this.defaultDropdown.style.display = 'none';
+                    this.defaultDropdown.classList.toggle('d-none');
+                    this.selectDropdown.style.display = 'none';
+                    this.fillDropdown(this.autocompleteDropdown, null, this.input.value);
+                    this.autocompleteDropdown.style.display = 'block';
+
                     if (this.input.value === '') {
                         this.hideCloseBtn();
                     }
+
+
                 });
+
                 target.addEventListener('blur', () => {
+                    this.lockLinkButton();
                     if (this.input.value) {
                         this.label.style.display = 'none';
+                        this.unlockLinkButton();
                     }
-                })
+                });
             }
 
             if (target === this.closeBtn) {
@@ -219,7 +196,8 @@ class CitySearcher {
     }
 
 
-    async init() {
+    init() {
+        this.lockLinkButton();
         this.fillDropdown(this.defaultDropdown);
         this.eventListeners();
     }
@@ -230,6 +208,7 @@ const searcher = new CitySearcher({
     closeBtn: document.querySelector('.close-button'),
     defaultDropdown: document.querySelector('.dropdown-lists__list--default'),
     selectDropdown: document.querySelector('.dropdown-lists__list--select'),
+    autocompleteDropdown: document.querySelector('.dropdown-lists__list--autocomplete'),
     root: document.querySelector('.input-cities'),
     db: 'js/db_cities.json',
 });

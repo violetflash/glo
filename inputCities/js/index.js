@@ -68,19 +68,15 @@ class CitySearcher {
                 }
 
                 if (dropdown === this.autocompleteDropdown) {
-                    // if (!searchTerm) return;
 
-                    // console.log(elem.cities)
                     const regExp = new RegExp(searchTerm, 'gi');
                     elem.cities.forEach((city) => {
                         if (regExp.test(city.name.toLowerCase())) {
                             target.innerHTML += this.renderCity(city.name, city.count, city.link);
                         }
-                        // else if (target.innerHTML === '') {
-                        //     console.log('пусто')
-                        //     target.innerHTML = 'ничего не найдено';
+                        // if (index > 0 && target.innerHTML === '') {
+                        //     target.innerHTML = 'не найдено';
                         // }
-
                     });
                 }
             });
@@ -100,6 +96,7 @@ class CitySearcher {
     }
 
     closeDropdowns() {
+        this.autocompleteDropdown.querySelector('.dropdown-lists__col').innerHTML = '';
         // this.defaultDropdown.style.maxHeight = '0';
         this.defaultDropdown.style.display = 'none';
         document.querySelector('.dropdown').scrollTop = 0;
@@ -132,14 +129,12 @@ class CitySearcher {
         this.autocompleteDropdown.style.display = 'block';
     }
 
-
     lockLinkButton() {
         this.linkBtn.setAttribute('disabled', 'true');
     }
 
     unlockLinkButton() {
         this.linkBtn.removeAttribute('disabled');
-
     }
 
     showCloseBtn() {
@@ -175,6 +170,8 @@ class CitySearcher {
                         this.autocompleteDropdown.querySelector('.dropdown-lists__col').innerHTML = '';
                         this.fillDropdown(this.autocompleteDropdown, null, this.input.value);
                         this.showAutocompleteDropdown();
+                    } else {
+                        this.autocompleteDropdown.querySelector('.dropdown-lists__col').innerHTML = 'нету ничего';
                     }
 
 
@@ -182,6 +179,9 @@ class CitySearcher {
                     if (this.input.value === '') {
 
                     }
+
+                    // target.removeEventListener('input', inputHandler);
+
                 };
 
                 target.addEventListener('input', inputHandler);
@@ -192,6 +192,8 @@ class CitySearcher {
                         this.label.style.display = 'none';
                         this.unlockLinkButton();
                     }
+                    target.removeEventListener('input', inputHandler);
+
                 });
             }
 

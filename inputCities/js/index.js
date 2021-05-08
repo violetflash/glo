@@ -55,9 +55,9 @@ class CitySearcher {
                         if (index > 2) return;
                         target.innerHTML += this.renderCity(city.name, city.count, city.link);
                     });
+                }
 
-
-                } else if (dropdown === this.selectDropdown) {
+                if (dropdown === this.selectDropdown) {
                     if (elem.country !== country) return;
 
                     target.innerHTML = this.renderCountry(elem.country, elem.count);
@@ -65,19 +65,22 @@ class CitySearcher {
                     elem.cities.forEach(city => {
                         target.innerHTML += this.renderCity(city.name, city.count, city.link);
                     });
+                }
 
-                }   else if (dropdown === this.autocompleteDropdown) {
-                    target.innerHTML = '';
+                if (dropdown === this.autocompleteDropdown) {
+                    // if (!searchTerm) return;
+
+                    // console.log(elem.cities)
+                    const regExp = new RegExp(searchTerm, 'gi');
                     elem.cities.forEach((city) => {
-                        if (!searchTerm) return;
-                        searchTerm = searchTerm.toLowerCase();
-                        const regExp = new RegExp(searchTerm, 'g');
                         if (regExp.test(city.name.toLowerCase())) {
                             target.innerHTML += this.renderCity(city.name, city.count, city.link);
-                            console.log(city.name);
-                        } else {
-                            // this.autocompleteDropdown.textContent = 'Совпадений не найдено';
                         }
+                        // else if (target.innerHTML === '') {
+                        //     console.log('пусто')
+                        //     target.innerHTML = 'ничего не найдено';
+                        // }
+
                     });
                 }
             });
@@ -121,6 +124,15 @@ class CitySearcher {
         this.selectDropdown.style.display = 'block';
     }
 
+    closeAutocompleteDropdown() {
+        this.autocompleteDropdown.style.display = 'none';
+    }
+
+    showAutocompleteDropdown() {
+        this.autocompleteDropdown.style.display = 'block';
+    }
+
+
     lockLinkButton() {
         this.linkBtn.setAttribute('disabled', 'true');
     }
@@ -152,23 +164,27 @@ class CitySearcher {
                 // console.log(styles.maxHeight);
                 this.showDefaultDropdown();
 
-                target.addEventListener('input', () => {
-                    this.showCloseBtn();
-                    // this.defaultDropdown.style.display = 'none';
-                    this.closeDefaultDropdown();
-                    // this.defaultDropdown.classList.add('d-none');
-                    this.fillDropdown(this.autocompleteDropdown, null, this.input.value);
-                    this.autocompleteDropdown.style.display = 'block';
+                const inputHandler = () => {
+                    this.hideCloseBtn();
+                    this.showDefaultDropdown();
+                    this.closeAutocompleteDropdown();
 
-
-                    if (this.input.value === '') {
-                        this.hideCloseBtn();
-                        this.defaultDropdown.style.display = 'block';
-                        this.autocompleteDropdown.style.display = 'none';
+                    if (this.input.value) {
+                        this.showCloseBtn();
+                        this.closeDefaultDropdown();
+                        this.autocompleteDropdown.querySelector('.dropdown-lists__col').innerHTML = '';
+                        this.fillDropdown(this.autocompleteDropdown, null, this.input.value);
+                        this.showAutocompleteDropdown();
                     }
 
 
-                });
+
+                    if (this.input.value === '') {
+
+                    }
+                };
+
+                target.addEventListener('input', inputHandler);
 
                 target.addEventListener('blur', () => {
                     this.lockLinkButton();

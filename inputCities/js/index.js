@@ -8,7 +8,9 @@ class CitySearcher {
         this.autocompleteDropdown = autocompleteDropdown;
         this.linkBtn = document.querySelector('.button');
         this.label = document.querySelector('.label');
+        this.nonResult = document.getElementById('nope-info');
         this.root = root;
+        this.count = 0;
     }
 
     async fetchData() {
@@ -36,6 +38,8 @@ class CitySearcher {
     async fillDropdown(dropdown, country, searchTerm) {
         const response = await (await this.fetchData()).json();
         const target = dropdown.querySelector('.dropdown-lists__col');
+
+
 
         for (const responseKey in response) {
             //Отфильтровывание страны
@@ -69,18 +73,36 @@ class CitySearcher {
 
                 if (dropdown === this.autocompleteDropdown) {
 
+                    //Вывод "не найдено" при остутствии совпадений при поиске в инпуте
+                    const check = this.autocompleteDropdown.querySelector('.dropdown-lists__city');
+                    if (!check) {
+                        this.showElement(this.nonResult);
+                    } else {
+                        this.hideElement(this.nonResult);
+                    }
+
                     const regExp = new RegExp(searchTerm, 'gi');
                     elem.cities.forEach((city) => {
+
                         if (regExp.test(city.name.toLowerCase())) {
+                            city.name = city.name.replace(regExp, match => `<b>${match}</b>`);
                             target.innerHTML += this.renderCity(city.name, city.count, city.link);
                         }
-                        // if (index > 0 && target.innerHTML === '') {
-                        //     target.innerHTML = 'не найдено';
-                        // }
+
                     });
+
+
                 }
             });
         }
+    }
+
+    showElement(target) {
+        target.style.display = 'block';
+    }
+
+    hideElement(target) {
+        target.style.display = 'none';
     }
 
     setInputValue(value) {
@@ -129,12 +151,16 @@ class CitySearcher {
         this.autocompleteDropdown.style.display = 'block';
     }
 
+    lockElement(target) {
+        target.setAttribute('disabled', 'true');
+    }
+
     lockLinkButton() {
         this.linkBtn.setAttribute('disabled', 'true');
     }
 
-    unlockLinkButton() {
-        this.linkBtn.removeAttribute('disabled');
+    unlockElement(target) {
+        target.removeAttribute('disabled');
     }
 
     showCloseBtn() {
@@ -154,43 +180,31 @@ class CitySearcher {
 
             if (target === this.input) {
                 // this.defaultDropdown.style.maxHeight = this.defaultDropdown.scrollHeight + "px";
-
-                // const styles = window.getComputedStyle(this.defaultDropdown);
-                // console.log(styles.maxHeight);
-                this.showDefaultDropdown();
+                this.showElement(this.defaultDropdown);
 
                 const inputHandler = () => {
                     this.hideCloseBtn();
-                    this.showDefaultDropdown();
-                    this.closeAutocompleteDropdown();
+                    this.showElement(this.defaultDropdown);
+                    this.hideElement(this.autocompleteDropdown);
 
                     if (this.input.value) {
-                        this.showCloseBtn();
-                        this.closeDefaultDropdown();
+                        this.showElement(this.closeBtn);
+                        this.hideElement(this.defaultDropdown);
+
+                        //обнуление блока городов и формирование нового при каждом введении нового символа в инпут
                         this.autocompleteDropdown.querySelector('.dropdown-lists__col').innerHTML = '';
                         this.fillDropdown(this.autocompleteDropdown, null, this.input.value);
-                        this.showAutocompleteDropdown();
-                    } else {
-                        this.autocompleteDropdown.querySelector('.dropdown-lists__col').innerHTML = 'нету ничего';
+                        this.showElement(this.autocompleteDropdown);
                     }
-
-
-
-                    if (this.input.value === '') {
-
-                    }
-
-                    // target.removeEventListener('input', inputHandler);
-
                 };
 
                 target.addEventListener('input', inputHandler);
 
                 target.addEventListener('blur', () => {
-                    this.lockLinkButton();
+                    this.lockElement(this.linkBtn);
                     if (this.input.value) {
                         this.label.style.display = 'none';
-                        this.unlockLinkButton();
+                        this.unlockElement(this.linkBtn);
                     }
                     target.removeEventListener('input', inputHandler);
 
@@ -200,7 +214,6 @@ class CitySearcher {
             if (target === this.closeBtn) {
                 this.clearInputValue();
                 this.closeDropdowns();
-                //TODO закрытие всех дропдаунов
             }
 
             //переключение между дефолтом и селектом
@@ -208,18 +221,21 @@ class CitySearcher {
                 target = target.closest('.dropdown-lists__total-line');
                 const country = target.querySelector('.dropdown-lists__country').textContent;
                 this.setInputValue(country);
+                //заполнение селекта
                 this.fillDropdown(this.selectDropdown, country);
-                this.closeDefaultDropdown();
-                this.showSelectDropDown();
+                this.hideElement(this.defaultDropdown);
+                this.showElement(this.selectDropdown);
+
             }
 
+            //обратно
             if (target.closest('.dropdown-lists__list--select .dropdown-lists__total-line')) {
-                this.showDefaultDropdown();
-                this.closeSelectDropDown();
+                this.showElement(this.defaultDropdown);
+                this.hideElement(this.selectDropdown);
             }
 
 
-
+            //клик по городу
             if (target.closest('.dropdown-lists__line')) {
                 target = target.closest('.dropdown-lists__line');
                 const city = target.querySelector('.dropdown-lists__city');
@@ -228,6 +244,7 @@ class CitySearcher {
             }
         });
 
+        //ховеры
         this.root.addEventListener('mouseover', (e) => {
             const target = e.target;
             if (target.classList.contains('dropdown-lists__city')) {

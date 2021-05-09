@@ -115,10 +115,17 @@ body .main .input-cities label {
 }
 
 .dropdown {
+    position: relative;
     width: 100%;
     background: #fff;
     max-height: 300px;
     overflow: auto;
+}
+
+#nope-info {
+    display: none;
+    background-color: #fff;
+    padding: 5px;
 }
 
 .dropdown-lists {
@@ -126,6 +133,7 @@ body .main .input-cities label {
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
+    /*flex-wrap: wrap;*/
 }
 
 .dropdown-lists__list {

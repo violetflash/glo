@@ -16,15 +16,16 @@ class CitySearcher {
     }
 
     async fetchData() {
-        // return fetch(this.db);
         this.popup.style.display = 'block';
-
-        this.response = await (await fetch(this.db)).json();
-        console.log(this.response);
-
+        try {
+            this.response = await (await fetch(this.db)).json();
+            console.log('db successfully loaded...');
+        }
+        catch (err) {
+            console.log(err);
+            throw new Error('db loading failed...');
+        }
         this.popup.style.display = 'none';
-        console.log(1)
-
     }
 
     renderCity(name, count, link) {
@@ -45,20 +46,13 @@ class CitySearcher {
         `;
     }
 
-    async fillDropdown(dropdown, country, searchTerm, response = this.response) {
-
-        if (dropdown === this.defaultDropdown) {
-            // this.popup.style.display = 'block';
-        }
-        //animation here
-
-        // const response = await (await this.fetchData()).json();
+    async fillDropdown(dropdown, country, searchTerm) {
         const target = dropdown.querySelector('.dropdown-lists__col');
 
-        // this.popup.style.display = 'none';
-
+        const response = this.response;
 
         for (const responseKey in response) {
+
             //Отфильтровывание страны
             const countryArray = response[responseKey];
 
@@ -100,10 +94,10 @@ class CitySearcher {
 
                     const regExp = new RegExp(searchTerm, 'gi');
                     elem.cities.forEach((city) => {
-
-                        if (regExp.test(city.name.toLowerCase())) {
-                            city.name = city.name.replace(regExp, match => `<b>${match}</b>`);
-                            target.innerHTML += this.renderCity(city.name, city.count, city.link);
+                        let name = city.name;
+                        if (regExp.test(name.toLowerCase())) {
+                            name = name.replace(regExp, match => `<b>${match}</b>`);
+                            target.innerHTML += this.renderCity(name, city.count, city.link);
                         }
 
                     });

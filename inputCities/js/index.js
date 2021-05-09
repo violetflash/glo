@@ -1,5 +1,5 @@
 class CitySearcher {
-    constructor({ db, input, closeBtn, defaultDropdown, selectDropdown, autocompleteDropdown, root, popup }) {
+    constructor({db, input, closeBtn, defaultDropdown, selectDropdown, autocompleteDropdown, root, popup}) {
         this.db = db;
         this.input = input;
         this.closeBtn = closeBtn;
@@ -20,8 +20,7 @@ class CitySearcher {
         try {
             this.response = await (await fetch(this.db)).json();
             console.log('db successfully loaded...');
-        }
-        catch (err) {
+        } catch (err) {
             console.log(err);
             throw new Error('db loading failed...');
         }

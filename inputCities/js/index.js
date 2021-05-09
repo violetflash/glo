@@ -95,13 +95,6 @@ class CitySearcher {
         }
     }
 
-    showElement(target) {
-        target.style.display = 'block';
-    }
-
-    hideElement(target) {
-        target.style.display = 'none';
-    }
 
     setInputValue(value) {
         this.label.style.cssText = `top: -25px;left: 0;color: #00416A;`;
@@ -124,52 +117,21 @@ class CitySearcher {
         this.autocompleteDropdown.style.display = 'none';
     }
 
-    closeDefaultDropdown() {
-        // this.defaultDropdown.style.maxHeight = '0';
-        this.defaultDropdown.style.display = 'none';
+    showElement(target) {
+        target.style.display = 'block';
     }
 
-    showDefaultDropdown() {
-        this.defaultDropdown.style.display = 'block';
-    }
-
-    closeSelectDropDown() {
-        this.selectDropdown.style.display = 'none';
-    }
-
-    showSelectDropDown() {
-        this.selectDropdown.style.display = 'block';
-    }
-
-    closeAutocompleteDropdown() {
-        this.autocompleteDropdown.style.display = 'none';
-    }
-
-    showAutocompleteDropdown() {
-        this.autocompleteDropdown.style.display = 'block';
+    hideElement(target) {
+        target.style.display = 'none';
     }
 
     lockElement(target) {
         target.setAttribute('disabled', 'true');
     }
 
-    lockLinkButton() {
-        this.linkBtn.setAttribute('disabled', 'true');
-    }
-
     unlockElement(target) {
         target.removeAttribute('disabled');
     }
-
-    showCloseBtn() {
-        this.closeBtn.style.display = 'block';
-    }
-
-    hideCloseBtn() {
-        this.closeBtn.style.display = 'none';
-    }
-
-
 
     eventListeners() {
 
@@ -178,13 +140,17 @@ class CitySearcher {
 
             if (target === this.input) {
                 // this.defaultDropdown.style.maxHeight = this.defaultDropdown.scrollHeight + "px";
-                if (this.selectDropdown.style.display !== 'block') {
-                    this.showElement(this.defaultDropdown);
+
+                if (!this.input.value) {
+                    if (this.selectDropdown.style.display !== 'block') {
+                        this.hideElement(this.autocompleteDropdown);
+                        this.showElement(this.defaultDropdown);
+                    }
+
                 }
 
-
                 const inputHandler = () => {
-                    this.hideCloseBtn();
+                    this.hideElement(this.closeBtn);
                     this.showElement(this.defaultDropdown);
                     this.hideElement(this.autocompleteDropdown);
 
@@ -242,6 +208,12 @@ class CitySearcher {
                 const city = target.querySelector('.dropdown-lists__city');
                 this.setInputValue(city.textContent);
                 this.linkBtn.href = city.dataset.link;
+                this.autocompleteDropdown.querySelector('.dropdown-lists__col').innerHTML = '';
+                this.fillDropdown(this.autocompleteDropdown, null, this.input.value);
+                this.hideElement(this.defaultDropdown);
+                this.hideElement(this.selectDropdown);
+                this.showElement(this.autocompleteDropdown);
+
             }
         });
 
@@ -263,7 +235,7 @@ class CitySearcher {
 
 
     init() {
-        this.lockLinkButton();
+        this.lockElement(this.linkBtn);
         this.linkBtn.setAttribute('target', '_blank');
         this.fillDropdown(this.defaultDropdown);
         this.eventListeners();

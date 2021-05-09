@@ -138,16 +138,11 @@ class CitySearcher {
         target.style.display = 'none';
     }
 
-    lockElement(target) {
-        target.setAttribute('disabled', 'true');
-    }
-
-    unlockElement(target) {
-        target.removeAttribute('disabled');
+    lockLink(target) {
+        target.removeAttribute('href');
     }
 
     eventListeners() {
-
         this.root.addEventListener('click', (e) => {
             let target = e.target;
 
@@ -182,10 +177,10 @@ class CitySearcher {
                 target.addEventListener('input', inputHandler);
 
                 target.addEventListener('blur', () => {
-                    this.lockElement(this.linkBtn);
+                    this.lockLink(this.linkBtn);
                     if (this.input.value) {
                         this.label.style.display = 'none';
-                        this.unlockElement(this.linkBtn);
+
                     }
                     target.removeEventListener('input', inputHandler);
 
@@ -197,6 +192,19 @@ class CitySearcher {
                 this.closeDropdowns();
             }
 
+            const slideTarget = (target, condition, progress) => {
+                let counter = 0;
+
+                const moveTarget = () => {
+                    target.style.transform = `translateX(${counter}%)`;
+                    if (eval(condition)) {
+                        requestAnimationFrame(moveTarget);
+                    }
+                    counter += progress;
+                };
+                requestAnimationFrame(moveTarget);
+            };
+
             //переключение между дефолтом и селектом
             if (target.closest('.dropdown-lists__list--default .dropdown-lists__total-line')) {
                 target = target.closest('.dropdown-lists__total-line');
@@ -204,15 +212,25 @@ class CitySearcher {
                 this.setInputValue(country);
                 //заполнение селекта
                 this.fillDropdown(this.selectDropdown, country);
-                this.hideElement(this.defaultDropdown);
-                this.showElement(this.selectDropdown);
+
+                slideTarget(this.defaultDropdown, 'counter > -100', -50);
+
+                setTimeout(() => {
+                    this.hideElement(this.defaultDropdown);
+                    this.defaultDropdown.style.transform = 'translateX(0)';
+                    this.showElement(this.selectDropdown);
+                }, 400);
 
             }
 
             //обратно
             if (target.closest('.dropdown-lists__list--select .dropdown-lists__total-line')) {
-                this.showElement(this.defaultDropdown);
-                this.hideElement(this.selectDropdown);
+                slideTarget(this.selectDropdown, 'counter < 100', 50);
+                setTimeout(() => {
+                    this.showElement(this.defaultDropdown);
+                    this.hideElement(this.selectDropdown);
+                    this.selectDropdown.style.transform = 'translateX(0)';
+                }, 400);
             }
 
 
@@ -245,12 +263,19 @@ class CitySearcher {
                 target.classList.remove('dropdown-lists__city--ip');
             }
         });
+
+        window.addEventListener('click', (e) => {
+            const target = e.target;
+            if (target.closest('.dropdown') || target === this.input) return;
+            this.closeDropdowns();
+            this.showElement(this.autocompleteDropdown);
+        });
     }
 
 
     init() {
         this.fetchData();
-        this.lockElement(this.linkBtn);
+        this.lockLink(this.linkBtn);
         this.linkBtn.setAttribute('target', '_blank');
         this.fillDropdown(this.defaultDropdown);
         this.eventListeners();

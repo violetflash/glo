@@ -135,7 +135,6 @@ body .main .input-cities label {
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
-    /*flex-wrap: wrap;*/
 }
 
 .dropdown-lists__list {

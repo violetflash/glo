@@ -267,8 +267,8 @@ class CitySearcher {
         window.addEventListener('click', (e) => {
             const target = e.target;
             if (target.closest('.dropdown') || target === this.input) return;
-            this.closeDropdowns();
-            this.showElement(this.autocompleteDropdown);
+            this.hideElement(this.defaultDropdown);
+
         });
     }
 

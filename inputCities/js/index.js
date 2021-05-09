@@ -11,14 +11,23 @@ class CitySearcher {
         this.label = document.querySelector('.label');
         this.nonResult = document.getElementById('nope-info');
         this.root = root;
+    }
 
-
+    getLocale() {
+        let locale;
+        const regExp = new RegExp('RU|EN|DE', 'gi');
+        do {
+            locale = prompt('Введите локаль (RU, EN или DE):');
+        } while (!regExp.test(locale));
+        this.locale = locale;
     }
 
     async fetchData() {
         this.popup.style.display = 'block';
         try {
-            this.response = await (await fetch(this.db)).json();
+            this.response = await (await fetch(this.db, {
+                //POST, APPLICATION и прочее + ключ для сортировки на json server
+            })).json();
             console.log('db successfully loaded...');
         } catch (err) {
             console.log(err);
@@ -26,6 +35,7 @@ class CitySearcher {
         }
         this.popup.style.display = 'none';
     }
+
 
     renderCity(name, count, link) {
         return `
@@ -266,14 +276,59 @@ class CitySearcher {
 
         window.addEventListener('click', (e) => {
             const target = e.target;
-            if (target.closest('.dropdown') || target === this.input) return;
+            if (target.closest('.dropdown') || target === this.input) {
+                return;
+            }
             this.hideElement(this.defaultDropdown);
 
         });
     }
 
+    setCookie(name, value, options = {}) {
+
+        options = {
+            path: '/',
+            // при необходимости добавьте другие значения по умолчанию
+            ...options
+        };
+
+        if (options.expires instanceof Date) {
+            options.expires = options.expires.toUTCString();
+        }
+
+        let updatedCookie = encodeURIComponent(name) + "=" + encodeURIComponent(value);
+
+        for (let optionKey in options) {
+            updatedCookie += "; " + optionKey;
+            let optionValue = options[optionKey];
+            if (optionValue !== true) {
+                updatedCookie += "=" + optionValue;
+            }
+        }
+
+        document.cookie = updatedCookie;
+    }
+
+    getCookie(name) {
+        let matches = document.cookie.match(new RegExp(
+            "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
+        ));
+        return matches ? decodeURIComponent(matches[1]) : undefined;
+    }
+
+    deleteAllCookies() {
+        const cookies = document.cookie.split(';');
+        cookies.forEach((elem) => {
+            const fullCookie = elem.trim().split('=');
+            const cookieName = fullCookie[0];
+            this.deleteCookie(cookieName);
+        });
+    }
+
 
     init() {
+        this.getLocale();
+        this.setCookie('locale', this.locale);
         this.fetchData();
         this.lockLink(this.linkBtn);
         this.linkBtn.setAttribute('target', '_blank');

@@ -125,12 +125,13 @@ class CitySearcher {
         target.style.display = 'none';
     }
 
-    lockElement(target) {
-        target.setAttribute('disabled', 'true');
+    lockLink(target) {
+        target.removeAttribute('href');
+
     }
 
-    unlockElement(target) {
-        target.removeAttribute('disabled');
+    unlockLink(target) {
+        target.setAttribute('href', '#');
     }
 
     eventListeners() {
@@ -168,10 +169,9 @@ class CitySearcher {
                 target.addEventListener('input', inputHandler);
 
                 target.addEventListener('blur', () => {
-                    this.lockElement(this.linkBtn);
+                    this.lockLink(this.linkBtn);
                     if (this.input.value) {
                         this.label.style.display = 'none';
-                        this.unlockElement(this.linkBtn);
                     }
                     target.removeEventListener('input', inputHandler);
 
@@ -231,11 +231,17 @@ class CitySearcher {
                 target.classList.remove('dropdown-lists__city--ip');
             }
         });
+
+        window.addEventListener('click', (e) => {
+            const target = e.target;
+            if (target.closest('.dropdown') || target === this.input) return;
+            this.closeDropdowns();
+        });
     }
 
 
     init() {
-        this.lockElement(this.linkBtn);
+        this.lockLink(this.linkBtn);
         this.linkBtn.setAttribute('target', '_blank');
         this.fillDropdown(this.defaultDropdown);
         this.eventListeners();

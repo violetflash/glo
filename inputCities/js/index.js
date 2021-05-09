@@ -45,7 +45,7 @@ class CitySearcher {
         `;
     }
 
-    async fillDropdown(dropdown, country, searchTerm) {
+    async fillDropdown(dropdown, country, searchTerm, clickAnchor) {
         const target = dropdown.querySelector('.dropdown-lists__col');
 
         const response = this.response;
@@ -56,6 +56,7 @@ class CitySearcher {
             const countryArray = response[responseKey];
 
             countryArray.forEach(elem => {
+
                 elem.cities.sort((a, b) => +a.count - +b.count).reverse();
 
                 if (dropdown === this.defaultDropdown) {
@@ -96,7 +97,8 @@ class CitySearcher {
                         let name = city.name;
                         if (regExp.test(name.toLowerCase())) {
                             name = name.replace(regExp, match => `<b>${match}</b>`);
-                            target.innerHTML += this.renderCity(name, city.count, city.link);
+                            target.innerHTML += clickAnchor ? this.renderCity(name, city.count, city.link) :
+                                this.renderCity(name, elem.country, city.link);
                         }
 
                     });
@@ -220,7 +222,7 @@ class CitySearcher {
                 this.setInputValue(city.textContent);
                 this.linkBtn.href = city.dataset.link;
                 this.autocompleteDropdown.querySelector('.dropdown-lists__col').innerHTML = '';
-                this.fillDropdown(this.autocompleteDropdown, null, this.input.value);
+                this.fillDropdown(this.autocompleteDropdown, null, this.input.value, true);
                 this.hideElement(this.defaultDropdown);
                 this.hideElement(this.selectDropdown);
                 this.showElement(this.autocompleteDropdown);

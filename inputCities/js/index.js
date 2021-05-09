@@ -45,6 +45,7 @@ class CitySearcher {
         `;
     }
 
+    //clickAnchor - следит откуда пришел клик
     async fillDropdown(dropdown, country, searchTerm, clickAnchor) {
         const target = dropdown.querySelector('.dropdown-lists__col');
 

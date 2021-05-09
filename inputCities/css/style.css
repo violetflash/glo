@@ -127,7 +127,7 @@ body .main .input-cities label {
 #nope-info {
     display: none;
     background-color: #fff;
-    padding: 5px;
+    padding: 5px 15px;
 }
 
 .dropdown-lists {

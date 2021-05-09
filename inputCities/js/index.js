@@ -1,20 +1,30 @@
 class CitySearcher {
-    constructor({ db, input, closeBtn, defaultDropdown, selectDropdown, autocompleteDropdown, root }) {
+    constructor({ db, input, closeBtn, defaultDropdown, selectDropdown, autocompleteDropdown, root, popup }) {
         this.db = db;
         this.input = input;
         this.closeBtn = closeBtn;
         this.defaultDropdown = defaultDropdown;
         this.selectDropdown = selectDropdown;
         this.autocompleteDropdown = autocompleteDropdown;
+        this.popup = popup;
         this.linkBtn = document.querySelector('.button');
         this.label = document.querySelector('.label');
         this.nonResult = document.getElementById('nope-info');
         this.root = root;
-        this.count = 0;
+
+
     }
 
     async fetchData() {
-        return fetch(this.db);
+        // return fetch(this.db);
+        this.popup.style.display = 'block';
+
+        this.response = await (await fetch(this.db)).json();
+        console.log(this.response);
+
+        this.popup.style.display = 'none';
+        console.log(1)
+
     }
 
     renderCity(name, count, link) {
@@ -35,10 +45,17 @@ class CitySearcher {
         `;
     }
 
-    async fillDropdown(dropdown, country, searchTerm) {
-        const response = await (await this.fetchData()).json();
+    async fillDropdown(dropdown, country, searchTerm, response = this.response) {
+
+        if (dropdown === this.defaultDropdown) {
+            // this.popup.style.display = 'block';
+        }
+        //animation here
+
+        // const response = await (await this.fetchData()).json();
         const target = dropdown.querySelector('.dropdown-lists__col');
 
+        // this.popup.style.display = 'none';
 
 
         for (const responseKey in response) {
@@ -144,6 +161,7 @@ class CitySearcher {
                 if (!this.input.value) {
                     if (this.selectDropdown.style.display !== 'block') {
                         this.hideElement(this.autocompleteDropdown);
+                        this.fillDropdown(this.defaultDropdown);
                         this.showElement(this.defaultDropdown);
                     }
 
@@ -235,6 +253,7 @@ class CitySearcher {
 
 
     init() {
+        this.fetchData();
         this.lockElement(this.linkBtn);
         this.linkBtn.setAttribute('target', '_blank');
         this.fillDropdown(this.defaultDropdown);
@@ -249,7 +268,8 @@ const searcher = new CitySearcher({
     selectDropdown: document.querySelector('.dropdown-lists__list--select'),
     autocompleteDropdown: document.querySelector('.dropdown-lists__list--autocomplete'),
     root: document.querySelector('.input-cities'),
-    db: 'js/db_cities.json',
+    db: 'http://localhost:3000/db',
+    popup: document.getElementById('popup')
 });
 
 searcher.init();

@@ -90,8 +90,6 @@ class CitySearcher {
                         }
 
                     });
-
-
                 }
             });
         }
@@ -180,7 +178,10 @@ class CitySearcher {
 
             if (target === this.input) {
                 // this.defaultDropdown.style.maxHeight = this.defaultDropdown.scrollHeight + "px";
-                this.showElement(this.defaultDropdown);
+                if (this.selectDropdown.style.display !== 'block') {
+                    this.showElement(this.defaultDropdown);
+                }
+
 
                 const inputHandler = () => {
                     this.hideCloseBtn();

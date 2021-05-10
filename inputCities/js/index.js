@@ -55,29 +55,22 @@ class CitySearcher {
 
         let response = this.response;
 
+        const countries = ['Deutschland', 'Россия', 'United Kingdom'];
 
-        //===================  Пересоздание объекта в соответствии с выбранной локалью
-        // const sortedObj = {};
-        //
-        //
-        // for (const key in response) {
-        //     //задаем первый в очереди объект
-        //     if (key === this.locale.toUpperCase()) {
-        //         sortedObj[key] = response[key];
-        //         //Загоняем остальные
-        //         for (const key in response) {
-        //             if (key === this.locale.toUpperCase()) {
-        //                 continue;
-        //             }
-        //             sortedObj[key] = response[key];
-        //         }
-        //     }
-        // }
-        //
-        // //switch back
-        // response = sortedObj;
+        const temp = [];
+        const temp2 = [];
 
-        //====================
+        response.forEach(elem => {
+            for (const country of countries) {
+                if (elem.country === country) {
+                    temp.push(elem);
+                    return;
+                }
+            }
+            temp2.push(elem);
+        });
+
+        response = temp.concat(temp2);
 
         response.forEach(elem => {
 
@@ -110,10 +103,8 @@ class CitySearcher {
 
                 //Вывод "не найдено" при остутствии совпадений при поиске в инпуте
                 const check = this.autocompleteDropdown.querySelector('.dropdown-lists__city');
-
                 if (!check) {
                     this.showElement(this.nonResult);
-                    console.log('показали')
                 } else {
                     this.hideElement(this.nonResult);
                 }
@@ -358,10 +349,9 @@ class CitySearcher {
 
     checkFetched() {
         if (this.getCookie('locale')) {
-            console.log('уже задана локаль ', this.locale);
+            console.log('уже задана локаль: ', this.locale);
             this.response = JSON.parse(localStorage.getItem('countriesObj'));
             this.hideElement(this.popup);
-            console.log(this.response);
 
         } else {
             this.getLocale();

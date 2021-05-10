@@ -229,7 +229,7 @@ class CitySearcher {
                     this.hideElement(this.defaultDropdown);
                     this.defaultDropdown.style.transform = 'translateX(0)';
                     this.showElement(this.selectDropdown);
-                }, 400);
+                }, 200);
 
             }
 
@@ -240,7 +240,7 @@ class CitySearcher {
                     this.showElement(this.defaultDropdown);
                     this.hideElement(this.selectDropdown);
                     this.selectDropdown.style.transform = 'translateX(0)';
-                }, 400);
+                }, 200);
             }
 
 

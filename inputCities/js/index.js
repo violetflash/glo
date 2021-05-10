@@ -108,13 +108,7 @@ class CitySearcher {
 
             if (dropdown === this.autocompleteDropdown) {
 
-                //Вывод "не найдено" при остутствии совпадений при поиске в инпуте
-                const check = this.autocompleteDropdown.querySelector('.dropdown-lists__city');
-                if (!check) {
-                    this.showElement(this.nonResult);
-                } else {
-                    this.hideElement(this.nonResult);
-                }
+
 
                 const regExp = new RegExp(searchTerm, 'gi');
                 elem.cities.forEach((city) => {
@@ -126,6 +120,15 @@ class CitySearcher {
                     }
 
                 });
+                //Вывод "не найдено" при остутствии совпадений при поиске в инпуте
+                const check = this.autocompleteDropdown.querySelector('.dropdown-lists__city');
+                if (!check) {
+                    this.showElement(this.nonResult);
+                    console.log('показали')
+                } else {
+                    this.hideElement(this.nonResult);
+                    console.log('убрали')
+                }
             }
         });
 

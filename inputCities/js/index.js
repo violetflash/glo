@@ -54,7 +54,7 @@ class CitySearcher {
         const target = dropdown.querySelector('.dropdown-lists__col');
 
         let response = this.response;
-        console.log(response);
+
 
         //===================  Пересоздание объекта в соответствии с выбранной локалью
         // const sortedObj = {};

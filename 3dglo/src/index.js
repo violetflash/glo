@@ -12,6 +12,7 @@ import validation from './modules/validation';
 import calc from './modules/calc';
 import removeRequiredAttr from './modules/removeRequiredAttr';
 import sendForm from './modules/sendForm';
+import Carousel from './modules/carousel';
 
 
 //Timer
@@ -39,3 +40,5 @@ calc(100);
 //remove required attr from inputs
 removeRequiredAttr();
 sendForm();
+const sliderCarousel = new Carousel();
+sliderCarousel.init();

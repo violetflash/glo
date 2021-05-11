@@ -1,7 +1,14 @@
 'use strict';
 
 class Carousel {
-    constructor({ main, wrapper, next, prev, infinite = false, slidesToShow = 2, position = 0 }) {
+    constructor({
+        main,
+        wrapper,
+        next,
+        prev,
+        infinite = false,
+        slidesToShow = 2,
+        position = 0 }) {
         this.main = document.querySelector(main);
         this.wrapper = document.querySelector(wrapper);
         this.slides = document.querySelector(wrapper).children;
@@ -11,6 +18,7 @@ class Carousel {
         this.infinite = infinite;
         this.options = {
             position,
+            maxPosition: this.slides.length - this.slidesToShow,
             slideWidth: Math.floor(100 / this.slidesToShow),
         };
     }
@@ -36,6 +44,9 @@ class Carousel {
                 will-change: transform !important;
             }
             .max-slider__item {
+                display: flex !important;
+                align-items: center;
+                justify-content: center;
                 flex: 0 0 ${this.options.slideWidth}% !important;
                 margin: auto 0 !important;
             }
@@ -45,14 +56,32 @@ class Carousel {
 
     addSliderArrows() {
         this.main.insertAdjacentHTML('beforeend', `
-            <button id="max-slider__prev-arrow"> < </button>
-            <button id="max-slider__next-arrow"> > </button>
+            <button id="max-slider__prev-arrow"></button>
+            <button id="max-slider__next-arrow"></button>
         `);
+        const style = document.createElement('style');
+        style.textContent = `
+            #max-slider__prev-arrow,
+            #max-slider__next-arrow {
+                margin: 0 10px;
+                border: 20px solid transparent;
+                background: transparent;
+                outline: transparent;
+            }
+            #max-slider__next-arrow {
+                border-left-color: #19b5fe;
+            }
+            #max-slider__prev-arrow {
+                border-right-color: #19b5fe;
+                
+            }      
+        `;
+        document.head.appendChild(style);
     }
 
     nextSlider() {
-        if  (this.infinite || this.slides.length - this.slidesToShow > Math.abs(this.options.position)) {
-            if (Math.abs(this.options.position) === this.slides.length - this.slidesToShow) {
+        if  (this.infinite || this.options.maxPosition > Math.abs(this.options.position)) {
+            if (Math.abs(this.options.position) === this.options.maxPosition) {
                 this.options.position = 1;
             }
             --this.options.position;
@@ -63,7 +92,7 @@ class Carousel {
     prevSlider() {
         if (this.infinite || this.options.position) {
             if (this.options.position === 0) {
-                this.options.position = -(this.slides.length +1 - this.slidesToShow);
+                this.options.position = -this.options.maxPosition - 1;
             }
             ++this.options.position;
 

@@ -14,39 +14,38 @@ import removeRequiredAttr from './modules/removeRequiredAttr';
 import sendForm from './modules/sendForm';
 import Carousel from './modules/carousel';
 
-
-//Timer
 countTimer('12 may 2021 00:10');
-//меню
 toggleMenu();
-//popup
 togglePopup();
-//scroll
 scrollDown();
-//TABS
 tabs();
-//SLIDER
 slider();
-//OUR TEAM HOVER
 commandImagesHandler();
-//ВАЛИДАЦИЯ
-//Calculator validator
 validateCalc();
-//FORMS VALIDATION
 validation();
-// calculator
 calc(100);
-//send-ajax-form
-//remove required attr from inputs
 removeRequiredAttr();
 sendForm();
 
 const sliderCarousel = new Carousel({
     main: '.companies-wrapper',
     wrapper: '.companies-hor',
-    prev: '#max-slider__prev-arrow',
-    next: '#max-slider__next-arrow',
     slidesToShow: 4,
     infinite: true,
+
+    responsive: [
+        {
+            breakpoint: 1024,
+            slidesToShow: 3
+        },
+        {
+            breakpoint: 768,
+            slidesToShow: 2
+        },
+        {
+            breakpoint: 576,
+            slidesToShow: 2
+        }
+    ],
 });
 sliderCarousel.init();

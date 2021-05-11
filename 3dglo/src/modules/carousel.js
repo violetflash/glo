@@ -1,14 +1,17 @@
 'use strict';
 
 class Carousel {
-    constructor({
-        main,
-        wrapper,
-        next,
-        prev,
-        infinite = false,
-        slidesToShow = 2,
-        position = 0 }) {
+    constructor(
+        {
+            main,
+            wrapper,
+            next,
+            prev,
+            infinite = false,
+            slidesToShow = 2,
+            position = 0,
+            responsive = [],
+        }) {
         this.main = document.querySelector(main);
         this.wrapper = document.querySelector(wrapper);
         this.slides = document.querySelector(wrapper).children;
@@ -21,6 +24,7 @@ class Carousel {
             maxPosition: this.slides.length - this.slidesToShow,
             slideWidth: Math.floor(100 / this.slidesToShow),
         };
+        this.responsive = responsive;
     }
 
     addSliderClasses() {
@@ -32,8 +36,12 @@ class Carousel {
     }
 
     addStyle() {
-        const style = document.createElement('style');
-        style.id = 'max-slider__styles';
+        let style = document.getElementById('max-slider__styles');
+        if (!style) {
+            style = document.createElement('style');
+            style.id = 'max-slider__styles';
+        }
+
         style.textContent = `
             .max-slider {
                 overflow: hidden !important;
@@ -105,6 +113,36 @@ class Carousel {
         this.next.addEventListener('click', this.nextSlider.bind(this));
     }
 
+    initResponsive() {
+        const slidesToShowDefault = this.slidesToShow;
+        const breakpoints = this.responsive.map(item => item.breakpoint);
+        const maxBreakpoint = Math.max(...breakpoints);
+
+        const checkScreenWidth = () => {
+            const windowWidth = document.documentElement.clientWidth;
+            if (windowWidth < maxBreakpoint) {
+                for (let i = 0; i < breakpoints.length; i++) {
+                    if (windowWidth < breakpoints[i]) {
+                        this.slidesToShow = this.responsive[i].slidesToShow;
+                        //обновление ширины слайда
+                        this.options.slideWidth = Math.floor(100 / this.slidesToShow);
+                        this.addStyle();
+                    }
+
+                }
+            } else {
+                this.slidesToShow = slidesToShowDefault;
+                //обновление ширины слайда
+                this.options.slideWidth = Math.floor(100 / this.slidesToShow);
+                this.addStyle();
+            }
+        };
+
+        checkScreenWidth();
+
+        window.addEventListener('resize', checkScreenWidth);
+    }
+
     init() {
         this.addSliderClasses();
         this.addStyle();
@@ -116,6 +154,10 @@ class Carousel {
         }
 
         this.controlSlider();
+
+        if (this.responsive) {
+            this.initResponsive();
+        }
     }
 }
 

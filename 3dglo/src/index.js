@@ -48,4 +48,5 @@ const sliderCarousel = new Carousel({
         }
     ],
 });
+
 sliderCarousel.init();

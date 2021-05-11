@@ -40,5 +40,13 @@ calc(100);
 //remove required attr from inputs
 removeRequiredAttr();
 sendForm();
-const sliderCarousel = new Carousel();
+
+const sliderCarousel = new Carousel({
+    main: '.companies-wrapper',
+    wrapper: '.companies-hor',
+    prev: '#max-slider__prev-arrow',
+    next: '#max-slider__next-arrow',
+    slidesToShow: 4,
+    infinite: true,
+});
 sliderCarousel.init();

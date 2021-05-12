@@ -14,13 +14,12 @@ function countTimer(deadline) {
         return {timeRemaining, hours, minutes, seconds};
     }
 
-    function checkZero(num) {
+    const checkZero = (num) => {
         return num < 10 ? '0' + num : num;
-    }
+    };
 
     function updateClock() {
         const timer = getTimeRemaining();
-
 
         timerHours.textContent = checkZero(timer.hours);
         timerMinutes.textContent = checkZero(timer.minutes);

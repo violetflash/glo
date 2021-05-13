@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link href="https://fonts.googleapis.com/css?family=Roboto:400,700&display=swap" rel="stylesheet">
+  <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-database.js"></script>
+
+
+  <title>Document</title>
+</head>
+
+<body>
+  <input id="name" type="text" placeholder="name" autocomplete="off">
+  <input id="country" type="text" placeholder="country" autocomplete="off">
+  <button id="button">Save Data</button>
+
+  <script src="js/index.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyBr5dEVI4guf7A7h9FyFpuu4RDzYWl4KRU",
+      authDomain: "test-f0ed9.firebaseapp.com",
+      projectId: "test-f0ed9",
+      storageBucket: "test-f0ed9.appspot.com",
+      messagingSenderId: "58633172412",
+      appId: "1:58633172412:web:7e34e14881300c229ba7b9"
+    };
+    firebase.initializeApp(firebaseConfig);
+
+    const databaseRef = firebase.database().ref('user');
+
+
+    'use strict';
+
+    const btn = document.getElementById('button');
+    const nameInput = document.getElementById('name');
+    const countryInput = document.getElementById('country');
+
+
+    btn.addEventListener('click', () => {
+      if (!nameInput || !countryInput) {
+        alert('Please enter inputs value');
+        return;
+      }
+
+      const data = {
+        name: nameInput.value,
+        country: countryInput.value,
+      };
+
+      console.log(data);
+
+      //save data to firebase
+
+
+
+      //push obj to reference records
+      databaseRef.push(data);
+    });
+
+
+
+  </script>
+</body>
+</html>

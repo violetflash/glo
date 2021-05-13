@@ -16,7 +16,8 @@ class CitySearcher {
 
     async fetchData() {
         let {db, locale} = this;
-        const address = db + locale;
+        const address = db + locale.toUpperCase() + '.json';
+        console.log(address);
         this.showElement(this.popup);
         try {
             this.response = await (await fetch(address)).json();
@@ -378,7 +379,7 @@ const searcher = new CitySearcher({
     selectDropdown: document.querySelector('.dropdown-lists__list--select'),
     autocompleteDropdown: document.querySelector('.dropdown-lists__list--autocomplete'),
     root: document.querySelector('.input-cities'),
-    db: 'http://localhost:3000/',
+    db: 'https://test-f0ed9-default-rtdb.europe-west1.firebasedatabase.app/db_cities/',
     popup: document.getElementById('popup')
 });
 

@@ -44,7 +44,7 @@ const sliderCarousel = new Carousel({
         },
         {
             breakpoint: 576,
-            slidesToShow: 2
+            slidesToShow: 1
         }
     ],
 });

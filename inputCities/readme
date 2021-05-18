@@ -1,0 +1,2 @@
+npm i -g json-server
+а потом из папки js в терминале написать json-server -w db_cities.json для запуска сервера
